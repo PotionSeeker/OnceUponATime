@@ -20,16 +20,15 @@ public class GriffinWanderGoal extends WaterAvoidingRandomStrollGoal {
     public void start() {
         super.start();
 
-        /*if (!mob.isFlying()) {
+        if (!mob.isFlying() && mob.wantsToFly()) {
             mob.setDeltaMovement(mob.getDeltaMovement().add(0.0D, 0.25D, 0.0D));
-        }*/
-
-        mob.setFlying(true);
+            mob.setFlying(true);
+        }
     }
 
     @Override
     public boolean canUse() {
-        return mob.wantsToFly() && super.canUse();
+        return (forceTrigger || mob.wantsToFly()) && super.canUse();
     }
 
     @Override
@@ -37,6 +36,8 @@ public class GriffinWanderGoal extends WaterAvoidingRandomStrollGoal {
         if (mob.wantsToFly() && !mob.onGround() && mob.getNavigation().isDone()) {
             trigger();
         }
+
+        speedModifier = mob.isFlying() && !mob.isControlledByLocalInstance() ? 10.0D : 1.0D;
     }
 
     public void trigger() {
@@ -47,7 +48,7 @@ public class GriffinWanderGoal extends WaterAvoidingRandomStrollGoal {
     @Override
     protected Vec3 getPosition() {
         Vec3 vec3 = this.mob.getViewVector(1.0F);
-        int i = 64;
+        int i = 32;
         Vec3 pos = findPos(this.mob, i, 4, vec3.x, vec3.z, ((float)Math.PI / 2F), 8, 6);
         return pos != null ? pos : AirAndWaterRandomPos.getPos(this.mob, i, 4, -2, vec3.x, vec3.z, ((float)Math.PI / 2F));
     }
@@ -71,7 +72,14 @@ public class GriffinWanderGoal extends WaterAvoidingRandomStrollGoal {
         });
     }
 
+    private boolean wantsToLand() {
+        return mob.isFlying() && mob.getRandom().nextFloat() > 0.85F;
+    }
+
     @Override
     public void stop() {
+        if (wantsToLand()) {
+            mob.landGoal.trigger();
+        }
     }
 }

@@ -26,6 +26,7 @@ public class GriffinLandOnGroundGoal extends WaterAvoidingRandomStrollGoal {
     public void start() {
         super.start();
         mob.setFlying(false);
+        mob.setLanding(true);
     }
 
     @Override
@@ -37,6 +38,16 @@ public class GriffinLandOnGroundGoal extends WaterAvoidingRandomStrollGoal {
         forceTrigger = true;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (mob.isLanding() && mob.onGround()) {
+            mob.setLanding(false);
+        }
+
+    }
+
     @Nullable
     @Override
     protected Vec3 getPosition() {
@@ -45,6 +56,6 @@ public class GriffinLandOnGroundGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public void stop() {
-        mob.setFlying(false);
+        mob.setLanding(false);
     }
 }

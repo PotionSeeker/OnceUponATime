@@ -101,28 +101,31 @@ public class GriffinModel<T extends Griffin> extends AgeableListModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (entity.isFlying()) {
+		if (!entity.onGround() && (entity.isFlying() || entity.isLanding())) {
+			limbSwing = ageInTicks * 0.75F;
+			limbSwingAmount = 0.3F;
+
 			this.head.xRot = 0.435F;
 
 			this.root.xRot = -0.08726F;
 
 			this.tail.xRot = 1.13446F;
 
-			this.l_wing_1.xRot = 0.174533F;
+			this.l_wing_1.xRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 0.5F;
 			this.l_wing_1.yRot = 0.0F;
-			this.l_wing_1.zRot = 1.39626F;
+			this.l_wing_1.zRot = 1.3F + Mth.sin(limbSwing * 0.5F) * limbSwingAmount * 2.5F;
 
 			this.l_wing_2.xRot = -0.0872665F;
 			this.l_wing_2.yRot = 0.0F;
-			this.l_wing_2.zRot = 0.305F;
+			this.l_wing_2.zRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 1.25F;
 
-			this.r_wing_1.xRot = 0.174533F;
+			this.r_wing_1.xRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 0.5F;
 			this.r_wing_1.yRot = 0.0F;
-			this.r_wing_1.zRot = -1.39626F;
+			this.r_wing_1.zRot = -(1.3F + Mth.sin(limbSwing * 0.5F) * limbSwingAmount * 2.5F);
 
 			this.r_wing_2.xRot = -0.0872665F;
 			this.r_wing_2.yRot = 0.0F;
-			this.r_wing_2.zRot = -0.305F;
+			this.r_wing_2.zRot = -(-Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 1.25F);
 
 			this.l_leg_1.xRot = -1.143F;
 			this.l_leg_1.yRot = -0.179F;

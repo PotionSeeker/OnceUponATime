@@ -1,5 +1,8 @@
 {
   "entity.onceuponatime.griffin": "Griffin",
 
-  "item.onceuponatime.griffin_spawn_egg": "Griffin Spawn Egg"
+  "item.onceuponatime.griffin_spawn_egg": "Griffin Spawn Egg",
+
+  "key.category.onceuponatime": "Once Upon a Time",
+  "key.dragonDescend": "Dragon Descend"
 }

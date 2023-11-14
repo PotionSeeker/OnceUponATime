@@ -18,7 +18,7 @@ public class GroundAndFlyingMoveControl extends MoveControl {
    }
 
    public void tick() {
-      if (mob.wantsToFly()) {
+      if (mob.isFlying()) {
          if (this.operation == MoveControl.Operation.MOVE_TO) {
             this.operation = MoveControl.Operation.WAIT;
             this.mob.setNoGravity(true);
@@ -35,7 +35,7 @@ public class GroundAndFlyingMoveControl extends MoveControl {
             float f = (float) (Mth.atan2(d2, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
             this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f, 90.0F));
             float f1;
-            if (this.mob.onGround()) {
+            if (this.mob.isFlying()) {
                f1 = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
             } else {
                f1 = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
@@ -51,7 +51,7 @@ public class GroundAndFlyingMoveControl extends MoveControl {
          }
       }
       else {
-         this.mob.setNoGravity(false);
+         this.mob.setNoGravity(mob.isLanding());
 
          if (this.operation == MoveControl.Operation.STRAFE) {
             float f = (float)this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
