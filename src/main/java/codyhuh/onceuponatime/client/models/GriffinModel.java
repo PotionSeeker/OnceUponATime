@@ -205,6 +205,9 @@ public class GriffinModel<T extends Griffin> extends AgeableListModel<T> {
 			this.l_leg_2b.xRot = 0.0F;
 			this.l_leg_2b.yRot = 0.0F;
 			this.l_leg_2b.zRot = 0.0F;
+
+			this.head.xRot = headPitch * ((float)Math.PI / 180F);
+			this.head.yRot = netHeadYaw * ((float)Math.PI / 180F);
 		}
 	}
 

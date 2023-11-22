@@ -27,6 +27,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -205,9 +206,10 @@ public class Griffin extends AbstractHorse {
     public void tick() {
         super.tick();
 
-        if (level().getBlockState(blockPosition().below(1   )).isAir() && !isFlying() && !isLanding()) {
-            setLanding(true);
-            wanderGoal.trigger();
+        if (!isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
+            if (landGoal != null) {
+                landGoal.trigger();
+            }
         }
 
         if (getFlightTicks() <= MAX_FLIGHT_TICKS && (isFlying() || isLanding()) && !isVehicle() && !isNoAi()) {
