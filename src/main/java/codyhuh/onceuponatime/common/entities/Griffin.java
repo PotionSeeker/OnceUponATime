@@ -81,15 +81,15 @@ public class Griffin extends AbstractHorse {
                     moveX = vec3d.x;
                     moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5 : 0F;
                     moveZ = moveZ > 0 ? moveZ : 0;
-                    setSpeed(speed * 0.005F);
                 }
                 else {
-                    speed *= 0.225f;
                     if (rider.jumping) {
                         jumpFromGround();
                         setFlying(true);
                     }
                 }
+
+                speed *= 0.5F;
 
                 vec3d = new Vec3(moveX, moveY, moveZ);
                 setSpeed(speed);
