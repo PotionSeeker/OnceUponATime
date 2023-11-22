@@ -106,6 +106,7 @@ public class GriffinModel<T extends Griffin> extends AgeableListModel<T> {
 			limbSwingAmount = 0.3F;
 
 			this.head.xRot = 0.435F;
+			this.head.yRot = 0.0F;
 
 			this.root.xRot = -0.08726F;
 
@@ -156,8 +157,6 @@ public class GriffinModel<T extends Griffin> extends AgeableListModel<T> {
 			this.l_leg_2b.zRot = -0.02655F;
 		}
 		else {
-			this.head.xRot = 0.0F;
-
 			this.root.xRot = 0.0F;
 
 			this.tail.xRot = 0.0F;

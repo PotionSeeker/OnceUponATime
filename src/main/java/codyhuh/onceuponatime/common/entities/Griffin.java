@@ -203,6 +203,11 @@ public class Griffin extends AbstractHorse {
     }
 
     @Override
+    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pSize) {
+        return pSize.height * 1.6F;
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
