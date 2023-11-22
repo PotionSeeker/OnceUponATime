@@ -205,6 +205,11 @@ public class Griffin extends AbstractHorse {
     public void tick() {
         super.tick();
 
+        if (level().getBlockState(blockPosition().below(1   )).isAir() && !isFlying() && !isLanding()) {
+            setLanding(true);
+            wanderGoal.trigger();
+        }
+
         if (getFlightTicks() <= MAX_FLIGHT_TICKS && (isFlying() || isLanding()) && !isVehicle() && !isNoAi()) {
             setFlightTicks(getFlightTicks() + 1);
         }
