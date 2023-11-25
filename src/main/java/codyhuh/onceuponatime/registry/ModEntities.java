@@ -11,5 +11,5 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, OnceUponATime.MOD_ID);
 
-    public static final RegistryObject<EntityType<Hippogryph>> HIPPOGRYPH = ENTITIES.register("griffin", () -> EntityType.Builder.of(Hippogryph::new, MobCategory.CREATURE).sized(1.25F, 1.6F).build("griffin"));
+    public static final RegistryObject<EntityType<Hippogryph>> HIPPOGRYPH = ENTITIES.register("hippogryph", () -> EntityType.Builder.of(Hippogryph::new, MobCategory.CREATURE).sized(1.25F, 1.6F).build("griffin"));
 }
