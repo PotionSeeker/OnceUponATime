@@ -1,16 +1,16 @@
 package codyhuh.onceuponatime.common.entities.movecontrol;
 
-import codyhuh.onceuponatime.common.entities.Griffin;
+import codyhuh.onceuponatime.common.entities.Hippogryph;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 
 public class GroundAndFlyingMoveControl extends MoveControl {
-   private final Griffin mob;
+   private final Hippogryph mob;
    private final int maxTurn;
    private final int maxFlightTicks;
 
-   public GroundAndFlyingMoveControl(Griffin pMob, int pMaxTurn, int maxFlightTicks) {
+   public GroundAndFlyingMoveControl(Hippogryph pMob, int pMaxTurn, int maxFlightTicks) {
       super(pMob);
       this.mob = pMob;
       this.maxTurn = pMaxTurn;

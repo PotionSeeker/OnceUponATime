@@ -1,8 +1,8 @@
 package codyhuh.onceuponatime.client;
 
 import codyhuh.onceuponatime.OnceUponATime;
-import codyhuh.onceuponatime.client.models.GriffinModel;
-import codyhuh.onceuponatime.client.renders.GriffinRenderer;
+import codyhuh.onceuponatime.client.models.HippogryphModel;
+import codyhuh.onceuponatime.client.renders.HippogryphRenderer;
 import codyhuh.onceuponatime.registry.ModEntities;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -17,12 +17,12 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void registerRenders(EntityRenderersEvent.RegisterRenderers e) {
-        e.registerEntityRenderer(ModEntities.GRIFFIN.get(), GriffinRenderer::new);
+        e.registerEntityRenderer(ModEntities.HIPPOGRYPH.get(), HippogryphRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions e) {
-        e.registerLayerDefinition(GriffinModel.LAYER_LOCATION, GriffinModel::createBodyLayer);
+        e.registerLayerDefinition(HippogryphModel.LAYER_LOCATION, HippogryphModel::createBodyLayer);
     }
 
     public static KeyMapping descendKey;

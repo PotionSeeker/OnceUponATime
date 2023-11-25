@@ -1,6 +1,6 @@
 package codyhuh.onceuponatime.common.entities.goal;
 
-import codyhuh.onceuponatime.common.entities.Griffin;
+import codyhuh.onceuponatime.common.entities.Hippogryph;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -8,10 +8,10 @@ import net.minecraft.world.entity.ai.util.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class GriffinWanderGoal extends WaterAvoidingRandomStrollGoal {
-    private final Griffin mob;
+public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
+    private final Hippogryph mob;
 
-    public GriffinWanderGoal(Griffin goalOwner, double speedMod, float probability) {
+    public HippogryphWanderGoal(Hippogryph goalOwner, double speedMod, float probability) {
         super(goalOwner, speedMod, probability);
         this.mob = goalOwner;
     }

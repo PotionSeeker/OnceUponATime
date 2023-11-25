@@ -1,6 +1,6 @@
 package codyhuh.onceuponatime;
 
-import codyhuh.onceuponatime.common.entities.Griffin;
+import codyhuh.onceuponatime.common.entities.Hippogryph;
 import codyhuh.onceuponatime.registry.ModEntities;
 import codyhuh.onceuponatime.registry.ModItems;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -25,12 +25,12 @@ public class OnceUponATime {
     }
 
     private void createAttributes(EntityAttributeCreationEvent e) {
-        e.put(ModEntities.GRIFFIN.get(), Griffin.createGriffinAttributes().build());
+        e.put(ModEntities.HIPPOGRYPH.get(), Hippogryph.createHippogryphAttributes().build());
     }
 
     private void populateTabs(BuildCreativeModeTabContentsEvent e) {
         if (e.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-            e.accept(ModItems.GRIFFIN_SPAWN_EGG.get());
+            e.accept(ModItems.HIPPOGRYPH_SPAWN_EGG.get());
         }
     }
 }
