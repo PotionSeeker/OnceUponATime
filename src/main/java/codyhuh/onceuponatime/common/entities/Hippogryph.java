@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,6 +42,8 @@ public class Hippogryph extends AbstractHorse {
     public final int MAX_FLIGHT_TICKS = 1200;
     public HippogryphWanderGoal wanderGoal;
     public HippogryphLandOnGroundGoal landGoal;
+    public float prevTilt;
+    public float tilt;
 
     public Hippogryph(EntityType<? extends AbstractHorse> type, Level level) {
         super(type, level);
@@ -253,17 +256,45 @@ public class Hippogryph extends AbstractHorse {
     }
 
     @Override
+    public void aiStep() {
+        super.aiStep();
+        prevTilt = tilt;
+        if (isFlying() || isLanding()) {
+            final float v = Mth.degreesDifference(this.getYRot(), yRotO);
+            if (Math.abs(v) > 1) {
+                if (Math.abs(tilt) < 25) {
+                    tilt += Math.signum(v);
+                }
+            } else {
+                if (Math.abs(tilt) > 0) {
+                    final float tiltSign = Math.signum(tilt);
+                    tilt -= tiltSign * 3;
+                    if (tilt * tiltSign < 0) {
+                        tilt = 0;
+                    }
+                }
+            }
+        } else {
+            tilt = 0;
+        }
+    }
+
+    @Override
     public InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+        ItemStack itemstack = pPlayer.getItemInHand(pHand);
+
         if (!this.isVehicle() && !this.isBaby()) {
             if (this.isTamed()) {
                 if (pPlayer.isSecondaryUseActive()) {
                     this.openCustomInventoryScreen(pPlayer);
                 }
-                else {
+                else if (isSaddled()) {
                     this.doPlayerRide(pPlayer);
                 }
+                else if (itemstack.is(Items.SADDLE)) {
+                    equipSaddle(SoundSource.NEUTRAL);
+                }
             } else {
-                ItemStack itemstack = pPlayer.getItemInHand(pHand);
                 if (!itemstack.isEmpty()) {
                     InteractionResult interactionresult = itemstack.interactLivingEntity(pPlayer, this, pHand);
                     if (interactionresult.consumesAction()) {
