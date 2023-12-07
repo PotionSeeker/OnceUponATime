@@ -2,6 +2,7 @@ package codyhuh.onceuponatime.client.renders;
 
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.client.models.HippogryphModel;
+import codyhuh.onceuponatime.client.renders.layers.PassengerLayer;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -18,6 +19,7 @@ public class HippogryphRenderer extends MobRenderer<Hippogryph, HippogryphModel<
     public HippogryphRenderer(EntityRendererProvider.Context cntxt) {
         super(cntxt, new HippogryphModel<>(cntxt.bakeLayer(HippogryphModel.LAYER_LOCATION)), 0.7F);
         addLayer(new SaddleLayer<>(this, new HippogryphModel<>(cntxt.bakeLayer(HippogryphModel.LAYER_LOCATION)), SADDLE));
+        addLayer(new PassengerLayer<>(this));
     }
 
     public ResourceLocation getTextureLocation(Hippogryph entity) {
@@ -28,6 +30,5 @@ public class HippogryphRenderer extends MobRenderer<Hippogryph, HippogryphModel<
     protected void setupRotations(Hippogryph pEntityLiving, PoseStack pPoseStack, float pAgeInTicks, float pRotationYaw, float pPartialTicks) {
         super.setupRotations(pEntityLiving, pPoseStack, pAgeInTicks, pRotationYaw, pPartialTicks);
         pPoseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(pPartialTicks, pEntityLiving.prevTilt, pEntityLiving.tilt)));
-
     }
 }

@@ -1,18 +1,26 @@
 package codyhuh.onceuponatime;
 
-import codyhuh.onceuponatime.common.entities.Hippogryph;
+import codyhuh.onceuponatime.client.ClientProxy;
+import codyhuh.onceuponatime.common.CommonProxy;
 import codyhuh.onceuponatime.registry.ModEntities;
 import codyhuh.onceuponatime.registry.ModItems;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(OnceUponATime.MOD_ID)
 public class OnceUponATime {
     public static final String MOD_ID = "onceuponatime";
+    public static CommonProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new); // Proxy code from Alex's Caves
 
     public OnceUponATime() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -20,17 +28,29 @@ public class OnceUponATime {
         ModEntities.ENTITIES.register(bus);
         ModItems.ITEMS.register(bus);
 
-        bus.addListener(this::createAttributes);
-        bus.addListener(this::populateTabs);
+        bus.addListener(this::clientSetup);
+        MinecraftForge.EVENT_BUS.addListener(this::preRenderLiving);
+
+        PROXY.commonInit();
     }
 
-    private void createAttributes(EntityAttributeCreationEvent e) {
-        e.put(ModEntities.HIPPOGRYPH.get(), Hippogryph.createHippogryphAttributes().build());
+    private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> PROXY.clientInit());
     }
 
-    private void populateTabs(BuildCreativeModeTabContentsEvent e) {
-        if (e.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-            e.accept(ModItems.HIPPOGRYPH_SPAWN_EGG.get());
+
+    @SubscribeEvent
+    public void preRenderLiving(RenderLivingEvent.Pre<Player, HumanoidModel<Player>> event) {
+        if (ClientProxy.blockedEntityRenders.contains(event.getEntity().getUUID())) {
+            if (!isFirstPersonPlayer(event.getEntity())) {
+                MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(event.getEntity(), event.getRenderer(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+                event.setCanceled(true);
+            }
+            ClientProxy.blockedEntityRenders.remove(event.getEntity().getUUID());
         }
+    }
+
+    public boolean isFirstPersonPlayer(LivingEntity entity) {
+        return entity.equals(Minecraft.getInstance().cameraEntity) && Minecraft.getInstance().options.getCameraType().isFirstPerson();
     }
 }

@@ -28,8 +28,8 @@ public class ClientEvents {
     public static KeyMapping descendKey;
 
     @SubscribeEvent
-    public static void register(final RegisterKeyMappingsEvent event) {
-        descendKey = create("dragonDescend", KeyEvent.VK_X);
+    public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
+        descendKey = create("flightDescend", KeyEvent.VK_X);
 
         event.register(descendKey);
     }

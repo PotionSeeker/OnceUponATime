@@ -263,7 +263,7 @@ public class Hippogryph extends AbstractHorse {
             final float v = Mth.degreesDifference(this.getYRot(), yRotO);
             if (Math.abs(v) > 1) {
                 if (Math.abs(tilt) < 25) {
-                    tilt += Math.signum(v);
+                    tilt -= Math.signum(v);
                 }
             } else {
                 if (Math.abs(tilt) > 0) {
