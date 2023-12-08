@@ -268,7 +268,7 @@ public class Hippogryph extends AbstractHorse {
             } else {
                 if (Math.abs(tilt) > 0) {
                     final float tiltSign = Math.signum(tilt);
-                    tilt -= tiltSign * 3;
+                    tilt -= tiltSign * 0.75F;
                     if (tilt * tiltSign < 0) {
                         tilt = 0;
                     }
