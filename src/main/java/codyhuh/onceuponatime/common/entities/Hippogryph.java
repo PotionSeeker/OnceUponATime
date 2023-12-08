@@ -3,6 +3,7 @@ package codyhuh.onceuponatime.common.entities;
 import codyhuh.onceuponatime.client.ClientEvents;
 import codyhuh.onceuponatime.common.entities.goal.HippogryphLandOnGroundGoal;
 import codyhuh.onceuponatime.common.entities.goal.HippogryphWanderGoal;
+import codyhuh.onceuponatime.common.entities.lookcontrol.FlyingLookControl;
 import codyhuh.onceuponatime.common.entities.movecontrol.GroundAndFlyingMoveControl;
 import codyhuh.onceuponatime.registry.ModEntities;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -31,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.Nullable;
@@ -48,12 +51,13 @@ public class Hippogryph extends AbstractHorse {
     public Hippogryph(EntityType<? extends AbstractHorse> type, Level level) {
         super(type, level);
         this.moveControl = new GroundAndFlyingMoveControl(this, 10, MAX_FLIGHT_TICKS);
+        this.lookControl = new FlyingLookControl(this, 10);
     }
 
     @Override
     protected void registerGoals() {
-        wanderGoal = new HippogryphWanderGoal(this, 1.0D, 1.0F);
         landGoal = new HippogryphLandOnGroundGoal(this, 1.0D);
+        wanderGoal = new HippogryphWanderGoal(this, 1.0D, 1.0F);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.25D, Ingredient.of(Items.GOLDEN_CARROT, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE), false));
@@ -80,7 +84,8 @@ public class Hippogryph extends AbstractHorse {
             double moveZ = rider.zza;
 
             yHeadRot = rider.yHeadRot;
-            xRot = rider.xRot * 0.65f;
+
+            getLookControl().setLookAt(position().add(0.0D, 2.0D,0.0D));
             yRot = Mth.rotateIfNecessary(yHeadRot, yRot, isFlying() ? 5 : 7);
 
             if (isControlledByLocalInstance()) {
@@ -118,6 +123,12 @@ public class Hippogryph extends AbstractHorse {
         else {
             super.travel(vec3d);
         }
+    }
+
+    protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+        float f = Mth.degreesDifference(pFrom, pTo);
+        float f1 = Mth.clamp(f, -pMaxDelta, pMaxDelta);
+        return pFrom + f1;
     }
 
     public boolean wantsToFly() {
@@ -233,7 +244,7 @@ public class Hippogryph extends AbstractHorse {
             setFlightTicks(getFlightTicks() + 1);
         }
 
-        if (onGround() || getFlightTicks() >= MAX_FLIGHT_TICKS) {
+        if (onGround() || getFlightTicks() >= MAX_FLIGHT_TICKS || isUnderWater()) {
             setFlying(false);
         }
 
@@ -277,6 +288,11 @@ public class Hippogryph extends AbstractHorse {
         } else {
             tilt = 0;
         }
+    }
+
+    @Override
+    protected Vec2 getRiddenRotation(LivingEntity pEntity) {
+        return new Vec2(getXRot(), pEntity.getYRot());
     }
 
     @Override

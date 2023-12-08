@@ -90,9 +90,12 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+
 		if (!entity.onGround() && (entity.isFlying() || entity.isLanding())) {
 			limbSwing = ageInTicks * 0.75F;
 			limbSwingAmount = 0.3F;
+
+			this.root.xRot = headPitch * ((float)Math.PI / 180F);
 
 			this.head.xRot = 0.435F;
 			this.head.yRot = 0.0F;
@@ -144,6 +147,8 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 			//this.l_leg_2b.zRot = -0.02655F;
 		}
 		else {
+			this.root.xRot = 0.0F;
+
 			this.tail.xRot = 0.0F;
 
 			this.l_wing_1.xRot = -0.22F;
