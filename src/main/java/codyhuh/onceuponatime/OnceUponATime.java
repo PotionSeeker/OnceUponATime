@@ -3,6 +3,7 @@ package codyhuh.onceuponatime;
 import codyhuh.onceuponatime.client.ClientProxy;
 import codyhuh.onceuponatime.common.CommonProxy;
 import codyhuh.onceuponatime.registry.ModEntities;
+import codyhuh.onceuponatime.registry.ModFeatures;
 import codyhuh.onceuponatime.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -27,6 +28,7 @@ public class OnceUponATime {
 
         ModEntities.ENTITIES.register(bus);
         ModItems.ITEMS.register(bus);
+        ModFeatures.FEATURES.register(bus);
 
         bus.addListener(this::clientSetup);
         MinecraftForge.EVENT_BUS.addListener(this::preRenderLiving);
