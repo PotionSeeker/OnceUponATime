@@ -21,7 +21,7 @@ public class DragonCaveFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> pContext) {
         WorldGenLevel worldGenLevel = pContext.level();
-        BlockPos blockPos = pContext.origin();
+        BlockPos blockPos = pContext.origin().offset(0, -80, 0);
         RandomSource random = pContext.random();
 
         FastNoiseLite noise = createNoise(worldGenLevel.getSeed() + random.nextLong(), 0.4F);
@@ -67,7 +67,7 @@ public class DragonCaveFeature extends Feature<NoneFeatureConfiguration> {
                         if (distance < 0.75) {
                             if (y > -6) {
                                 if (y < -4 && f < 0.0F && f > -0.2F) {
-                                    worldgenlevel.setBlock(pos, Blocks.GOLD_BLOCK.defaultBlockState(), 3);
+                                    worldgenlevel.setBlock(pos, Blocks.GOLD_BLOCK.defaultBlockState(), 3); // gold piles
                                 }
                                 else {
                                     worldgenlevel.setBlock(pos, hollowBlock, 3);
