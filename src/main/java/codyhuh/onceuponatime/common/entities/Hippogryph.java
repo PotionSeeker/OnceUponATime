@@ -6,6 +6,7 @@ import codyhuh.onceuponatime.common.entities.goal.HippogryphWanderGoal;
 import codyhuh.onceuponatime.common.entities.lookcontrol.FlyingLookControl;
 import codyhuh.onceuponatime.common.entities.movecontrol.GroundAndFlyingMoveControl;
 import codyhuh.onceuponatime.registry.ModEntities;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -233,6 +234,13 @@ public class Hippogryph extends AbstractHorse {
     @Override
     public void tick() {
         super.tick();
+
+        if (isVehicle() && getControllingPassenger() != null && isFlying() || isLanding()) {
+            float added = (float) position().y() * (float) getDeltaMovement().y();
+            float xTilt = Mth.clamp(added, -40.0F, 40.0F);
+
+            setXRot(-Mth.lerp(getXRot(), xTilt, xTilt));
+        }
 
         if (!isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
             if (landGoal != null) {
