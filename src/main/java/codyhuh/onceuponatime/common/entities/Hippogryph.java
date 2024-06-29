@@ -237,7 +237,7 @@ public class Hippogryph extends AbstractHorse {
 
         if (isVehicle() && getControllingPassenger() != null && isFlying() || isLanding()) {
             float added = (float) position().y() * (float) getDeltaMovement().y();
-            float xTilt = Mth.clamp(added, -40.0F, 40.0F);
+            float xTilt = Mth.clamp(added, -25.0F, 20.0F);
 
             setXRot(-Mth.lerp(getXRot(), xTilt, xTilt));
         }

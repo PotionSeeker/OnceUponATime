@@ -5,8 +5,10 @@ import codyhuh.onceuponatime.client.models.HippogryphModel;
 import codyhuh.onceuponatime.client.renders.HippogryphRenderer;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import codyhuh.onceuponatime.registry.ModEntities;
+import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -51,10 +53,16 @@ public class ClientEvents {
             var player = mc.player;
 
             if (mc.options.getCameraType().isFirstPerson() && player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
-                float factor = 1.0F;
+                float factor = 0.25F;
 
-                float pitch = e.getPitch() + (hippogryph.getXRot() * factor);
-                float roll = e.getRoll() + (hippogryph.tilt * factor);
+                float pitch = e.getPitch() + (float) (hippogryph.getXRot() * factor);
+                float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));
+
+                Camera camera = e.getCamera();
+
+                float f2 = (float) (-(Mth.atan2(0.5D, 2.0D) * (double) (180F / (float) Math.PI)));
+
+                camera.move(0.0D, hippogryph.getXRot() * 0.01D, (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt)) * 0.025D);
 
                 e.setPitch(pitch);
                 e.setRoll(roll);
