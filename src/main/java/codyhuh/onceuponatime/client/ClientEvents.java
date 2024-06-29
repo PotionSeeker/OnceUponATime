@@ -52,20 +52,26 @@ public class ClientEvents {
             Minecraft mc = Minecraft.getInstance();
             var player = mc.player;
 
-            if (mc.options.getCameraType().isFirstPerson() && player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
-                float factor = 0.25F;
+            if (player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
 
-                float pitch = e.getPitch() + (float) (hippogryph.getXRot() * factor);
-                float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));
+                if (mc.options.getCameraType().isFirstPerson()) {
+                    float factor = 0.25F;
 
-                Camera camera = e.getCamera();
+                    float pitch = e.getPitch() + (float) (Mth.lerp(e.getPartialTick(), hippogryph.xRotO, hippogryph.xRot) * factor);
+                    float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));
 
-                float f2 = (float) (-(Mth.atan2(0.5D, 2.0D) * (double) (180F / (float) Math.PI)));
+                    Camera camera = e.getCamera();
 
-                camera.move(0.0D, hippogryph.getXRot() * 0.01D, (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt)) * 0.025D);
+                    camera.move(0.0D, 0.0D, (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt)) * 0.025D);
 
-                e.setPitch(pitch);
-                e.setRoll(roll);
+                    e.setPitch(pitch);
+                    e.setRoll(roll);
+                }
+                else {
+                    Camera camera = e.getCamera();
+
+                    camera.move(-0.75D, 0.0D, 0.0D);
+                }
             }
         }
     }
