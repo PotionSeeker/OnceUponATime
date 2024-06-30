@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 
 public class HippogryphRenderer extends MobRenderer<Hippogryph, HippogryphModel<Hippogryph>> {
     private static final ResourceLocation LOC = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/hippogryph.png");
-    private static final ResourceLocation SADDLE = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/hippogryph_saddle.png");
+    private static final ResourceLocation SADDLE = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/saddle.png");
 
     public HippogryphRenderer(EntityRendererProvider.Context cntxt) {
         super(cntxt, new HippogryphModel<>(cntxt.bakeLayer(HippogryphModel.LAYER_LOCATION)), 0.7F);
