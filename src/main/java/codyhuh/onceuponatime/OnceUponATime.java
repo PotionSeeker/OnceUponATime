@@ -30,29 +30,6 @@ public class OnceUponATime {
         ModItems.ITEMS.register(bus);
         ModFeatures.FEATURES.register(bus);
 
-        bus.addListener(this::clientSetup);
-        MinecraftForge.EVENT_BUS.addListener(this::preRenderLiving);
-
         PROXY.commonInit();
-    }
-
-    private void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> PROXY.clientInit());
-    }
-
-
-    @SubscribeEvent
-    public void preRenderLiving(RenderLivingEvent.Pre<Player, HumanoidModel<Player>> event) {
-        if (ClientProxy.blockedEntityRenders.contains(event.getEntity().getUUID())) {
-            if (!isFirstPersonPlayer(event.getEntity())) {
-                MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(event.getEntity(), event.getRenderer(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
-                event.setCanceled(true);
-            }
-            ClientProxy.blockedEntityRenders.remove(event.getEntity().getUUID());
-        }
-    }
-
-    public boolean isFirstPersonPlayer(LivingEntity entity) {
-        return entity.equals(Minecraft.getInstance().cameraEntity) && Minecraft.getInstance().options.getCameraType().isFirstPerson();
     }
 }
