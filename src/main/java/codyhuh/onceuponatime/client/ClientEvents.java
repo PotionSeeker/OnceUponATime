@@ -59,27 +59,27 @@ public class ClientEvents {
         public static void cameraOverlay(ViewportEvent.ComputeCameraAngles e) {
             Minecraft mc = Minecraft.getInstance();
             var player = mc.player;
+            float factor;
 
             if (player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
+                Camera camera = e.getCamera();
 
                 if (mc.options.getCameraType().isFirstPerson()) {
-                    float factor = 0.25F;
-
-                    float pitch = e.getPitch() + (float) (Mth.lerp(e.getPartialTick(), hippogryph.xRotO, hippogryph.xRot) * factor);
-                    float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));
-
-                    Camera camera = e.getCamera();
+                    factor = 0.25F;
 
                     camera.move(0.0D, 0.0D, (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt)) * 0.025D);
-
-                    e.setPitch(pitch);
-                    e.setRoll(roll);
                 }
                 else {
-                    Camera camera = e.getCamera();
+                    factor = 0.1F;
 
                     camera.move(-0.75D, 0.0D, 0.0D);
                 }
+
+                float pitch = e.getPitch() + (float) (Mth.lerp(e.getPartialTick(), hippogryph.xRotO, hippogryph.xRot) * factor);
+                float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));
+
+                e.setPitch(pitch);
+                e.setRoll(roll);
             }
         }
 
