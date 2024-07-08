@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 public class Hippogryph extends AbstractHorse {
     private static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_LANDING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_ARMOR = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> FLIGHT_TICKS = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.INT);
     public final int MAX_FLIGHT_TICKS = 1200;
     public HippogryphWanderGoal wanderGoal;
@@ -154,6 +155,7 @@ public class Hippogryph extends AbstractHorse {
         this.entityData.define(IS_FLYING, false);
         this.entityData.define(FLIGHT_TICKS, 0);
         this.entityData.define(IS_LANDING, false);
+        this.entityData.define(HAS_ARMOR, false);
     }
 
     @Override
@@ -162,6 +164,7 @@ public class Hippogryph extends AbstractHorse {
         pCompound.putBoolean("IsHippogryphFlying", this.isFlying());
         pCompound.putInt("FlightTicks", this.getFlightTicks());
         pCompound.putBoolean("IsLanding", this.isLanding());
+        pCompound.putBoolean("HasArmor", this.isWearingArmor());
     }
 
     @Override

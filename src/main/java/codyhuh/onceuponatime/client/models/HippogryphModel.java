@@ -23,6 +23,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 	private final ModelPart l_wing_2;
 	private final ModelPart r_wing_1;
 	private final ModelPart r_wing_2;
+	private final ModelPart ears;
 	private final ModelPart l_leg_1;
 	private final ModelPart r_leg_1;
 	private final ModelPart l_leg_2a;
@@ -39,10 +40,12 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 		this.body = root.getChild("body");
 		this.tail = body.getChild("tail");
 		this.head = root.getChild("head");
+		this.ears = head.getChild("ears");
 		this.l_wing_1 = root.getChild("l_wing_1");
 		this.l_wing_2 = l_wing_1.getChild("l_wing_2");
 		this.r_wing_1 = root.getChild("r_wing_1");
-		this.r_wing_2 = r_wing_1.getChild("r_wing_2");	}
+		this.r_wing_2 = r_wing_1.getChild("r_wing_2");
+	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
@@ -73,9 +76,11 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 				.texOffs(46, 61).addBox(-1.5F, -12.5343F, -8.75F, 3.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
 				.texOffs(8, 83).addBox(-1.5F, -8.5343F, -8.75F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, -1.4657F, -8.25F));
 
-		PartDefinition cube_r1 = head.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(78, 36).addBox(-5.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.5F, -13.5343F, 0.25F, 0.0F, 0.0F, 0.2618F));
+		PartDefinition ears = head.addOrReplaceChild("ears", CubeListBuilder.create(), PartPose.offset(3.5F, -13.5F, 0.25F));
 
-		PartDefinition cube_r2 = head.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(78, 36).mirror().addBox(0.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(3.5F, -13.5343F, 0.25F, 0.0F, 0.0F, -0.2618F));
+		PartDefinition cube_r1 = ears.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(78, 36).addBox(-5.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-7.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.2618F));
+
+		PartDefinition cube_r2 = ears.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(78, 36).mirror().addBox(0.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.2618F));
 
 		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, 0.0F));
 
