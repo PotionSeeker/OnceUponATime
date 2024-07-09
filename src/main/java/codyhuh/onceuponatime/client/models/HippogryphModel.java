@@ -60,7 +60,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 		PartDefinition l_leg_1 = root.addOrReplaceChild("l_leg_1", CubeListBuilder.create().texOffs(16, 61).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 13.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(28, 36).addBox(-2.0F, 13.0F, -6.0F, 5.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(3.0F, 6.0F, -6.0F));
 
-		PartDefinition r_leg_1 = root.addOrReplaceChild("r_leg_1", CubeListBuilder.create().texOffs(16, 61).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
+		PartDefinition r_leg_1 = root.addOrReplaceChild("r_leg_1", CubeListBuilder.create().texOffs(16, 61).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 13.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(28, 36).addBox(-3.0F, 13.0F, -6.0F, 5.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(-4.0F, 6.0F, -6.0F));
 
 		PartDefinition l_wing_1 = root.addOrReplaceChild("l_wing_1", CubeListBuilder.create().texOffs(62, 61).addBox(-1.0F, -10.0F, -1.5F, 2.0F, 10.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(4.0F, -5.0F, -1.25F));
