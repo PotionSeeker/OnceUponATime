@@ -79,8 +79,7 @@ public class Hippogryph extends AbstractHorse {
         boolean flying = this.isFlying();
         float speed = (float) this.getAttributeValue(flying ? Attributes.FLYING_SPEED : Attributes.MOVEMENT_SPEED);
 
-        if (isControlledByLocalInstance() && getControllingPassenger() != null) {
-            LivingEntity rider = getControllingPassenger();
+        if (isControlledByLocalInstance() && getControllingPassenger() != null && getControllingPassenger() instanceof Player rider) {
             double moveX = rider.xxa * 0.5;
             double moveY = vec3d.y;
             double moveZ = rider.zza;
@@ -108,7 +107,7 @@ public class Hippogryph extends AbstractHorse {
                 vec3d = new Vec3(moveX, moveY, moveZ);
                 setSpeed(speed);
             }
-            else if (rider instanceof Player) {
+            else {
                 calculateEntityAnimation(true);
                 setDeltaMovement(Vec3.ZERO);
                 if (!level().isClientSide && isFlying())
@@ -119,12 +118,18 @@ public class Hippogryph extends AbstractHorse {
         if (flying) {
             this.moveRelative(speed, vec3d);
             this.move(MoverType.SELF, getDeltaMovement());
-            this.setDeltaMovement(getDeltaMovement().scale(0.91f));
+            double down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;
+            this.setDeltaMovement(getDeltaMovement().scale(0.91f).add(0,down,0));
             this.calculateEntityAnimation(true);
         }
         else {
             super.travel(vec3d);
         }
+    }
+
+    @Override
+    protected boolean canAddPassenger(Entity pPassenger) {
+        return pPassenger instanceof Player;
     }
 
     protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {

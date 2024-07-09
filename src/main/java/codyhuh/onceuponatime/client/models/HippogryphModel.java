@@ -82,7 +82,9 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 
 		PartDefinition cube_r2 = ears.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(78, 36).mirror().addBox(0.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.2618F));
 
-		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, 0.0F));
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.0F))
+				.texOffs(66, 97).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.1F))
+				.texOffs(0, 87).addBox(-6.0F, -4.0F, -4.8724F, 11.0F, 11.0F, 10.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, -1.0F, 0.0F));
 
 		PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(32, 61).addBox(-1.5F, -4.0F, 0.0F, 3.0F, 14.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 2.0F, 8.3776F, 0.3927F, 0.0F, 0.0F));
 
