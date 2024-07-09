@@ -5,6 +5,7 @@ import codyhuh.onceuponatime.common.entities.goal.HippogryphLandOnGroundGoal;
 import codyhuh.onceuponatime.common.entities.goal.HippogryphWanderGoal;
 import codyhuh.onceuponatime.common.entities.lookcontrol.FlyingLookControl;
 import codyhuh.onceuponatime.common.entities.movecontrol.GroundAndFlyingMoveControl;
+import codyhuh.onceuponatime.common.items.HippogryphArmorItem;
 import codyhuh.onceuponatime.registry.ModEntities;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -15,15 +16,17 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -39,11 +42,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class Hippogryph extends AbstractHorse {
     private static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_LANDING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_ARMOR = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> FLIGHT_TICKS = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.INT);
+    private static final UUID ARMOR_MODIFIER_UUID = UUID.randomUUID();
     public final int MAX_FLIGHT_TICKS = 1200;
     public HippogryphWanderGoal wanderGoal;
     public HippogryphLandOnGroundGoal landGoal;
@@ -115,7 +121,7 @@ public class Hippogryph extends AbstractHorse {
                 return;
             }
         }
-        if (flying) {
+        if (flying && !isNoAi()) {
             this.moveRelative(speed, vec3d);
             this.move(MoverType.SELF, getDeltaMovement());
             double down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;
@@ -169,7 +175,9 @@ public class Hippogryph extends AbstractHorse {
         pCompound.putBoolean("IsHippogryphFlying", this.isFlying());
         pCompound.putInt("FlightTicks", this.getFlightTicks());
         pCompound.putBoolean("IsLanding", this.isLanding());
-        pCompound.putBoolean("HasArmor", this.isWearingArmor());
+        if (!this.inventory.getItem(1).isEmpty()) {
+            pCompound.put("ArmorItem", this.inventory.getItem(1).save(new CompoundTag()));
+        }
     }
 
     @Override
@@ -178,6 +186,12 @@ public class Hippogryph extends AbstractHorse {
         this.setFlying(pCompound.getBoolean("IsHippogryphFlying"));
         this.setFlightTicks(pCompound.getInt("FlightTicks"));
         this.setLanding(pCompound.getBoolean("IsLanding"));
+        if (pCompound.contains("ArmorItem", 10)) {
+            ItemStack itemstack = ItemStack.of(pCompound.getCompound("ArmorItem"));
+            if (!itemstack.isEmpty() && this.isArmor(itemstack)) {
+                this.inventory.setItem(1, itemstack);
+            }
+        }
     }
 
     public boolean isFlying() {
@@ -202,6 +216,15 @@ public class Hippogryph extends AbstractHorse {
 
     public void setFlightTicks(int flightTicks) {
         this.entityData.set(FLIGHT_TICKS, flightTicks);
+    }
+
+    public ItemStack getArmor() {
+        return this.getItemBySlot(EquipmentSlot.CHEST);
+    }
+
+    private void setArmor(ItemStack pStack) {
+        this.setItemSlot(EquipmentSlot.CHEST, pStack);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
 
     public boolean canFly() {
@@ -316,25 +339,15 @@ public class Hippogryph extends AbstractHorse {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
 
         if (!this.isVehicle() && !this.isBaby()) {
-            if (this.isTamed()) {
-                if (pPlayer.isSecondaryUseActive()) {
-                    this.openCustomInventoryScreen(pPlayer);
-                }
-                else if (isSaddled()) {
-                    this.doPlayerRide(pPlayer);
-                }
-                else if (itemstack.is(Items.SADDLE)) {
-                    equipSaddle(SoundSource.NEUTRAL);
-                }
-            } else {
+            if (this.isTamed() && pPlayer.isSecondaryUseActive()) {
+                this.openCustomInventoryScreen(pPlayer);
+                return InteractionResult.sidedSuccess(this.level().isClientSide);
+            }
+            else {
                 if (!itemstack.isEmpty()) {
                     InteractionResult interactionresult = itemstack.interactLivingEntity(pPlayer, this, pHand);
                     if (interactionresult.consumesAction()) {
                         return interactionresult;
-                    }
-
-                    if (itemstack.is(Items.RABBIT) && !ForgeEventFactory.onAnimalTame(this, pPlayer)) {
-                        tameWithName(pPlayer);
                     }
 
                     if (this.canWearArmor() && this.isArmor(itemstack) && !this.isWearingArmor()) {
@@ -342,11 +355,57 @@ public class Hippogryph extends AbstractHorse {
                         return InteractionResult.sidedSuccess(this.level().isClientSide);
                     }
                 }
+
+                this.doPlayerRide(pPlayer);
             }
+            if (!isTamed() && itemstack.is(Items.RABBIT) && !ForgeEventFactory.onAnimalTame(this, pPlayer)) {
+                tameWithName(pPlayer);
+            }
+
             return InteractionResult.sidedSuccess(this.level().isClientSide);
         } else {
             return super.mobInteract(pPlayer, pHand);
         }
+    }
+
+    public boolean canWearArmor() {
+        return true;
+    }
+
+    public boolean isArmor(ItemStack pStack) {
+        return pStack.getItem() instanceof HippogryphArmorItem;
+    }
+
+    protected void updateContainerEquipment() {
+        if (!this.level().isClientSide) {
+            super.updateContainerEquipment();
+            this.setArmorEquipment(this.inventory.getItem(1));
+            this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        }
+    }
+
+    private void setArmorEquipment(ItemStack pStack) {
+        this.setArmor(pStack);
+        if (!this.level().isClientSide) {
+            this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_UUID);
+            if (this.isArmor(pStack)) {
+                int i = ((HippogryphArmorItem)pStack.getItem()).getProtection();
+                if (i != 0) {
+                    this.getAttribute(Attributes.ARMOR).addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Hippogryph armor bonus", i, AttributeModifier.Operation.ADDITION));
+                }
+            }
+        }
+
+    }
+
+    public void containerChanged(Container pInvBasic) {
+        ItemStack itemstack = this.getArmor();
+        super.containerChanged(pInvBasic);
+        ItemStack itemstack1 = this.getArmor();
+        if (this.tickCount > 20 && this.isArmor(itemstack1) && itemstack != itemstack1) {
+            this.playSound(SoundEvents.HORSE_ARMOR, 0.5F, 1.0F);
+        }
+
     }
 
     @Override

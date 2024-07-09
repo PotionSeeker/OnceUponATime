@@ -2,6 +2,7 @@ package codyhuh.onceuponatime.client.renders;
 
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.client.models.HippogryphModel;
+import codyhuh.onceuponatime.client.renders.layers.HippogryphArmorLayer;
 import codyhuh.onceuponatime.client.renders.layers.PassengerLayer;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,13 +14,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class HippogryphRenderer extends MobRenderer<Hippogryph, HippogryphModel<Hippogryph>> {
-    private static final ResourceLocation LOC = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/hippogryph.png");
-    private static final ResourceLocation SADDLE = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/saddle.png");
+    private static final ResourceLocation LOC = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/hippogryph/hippogryph.png");
+    private static final ResourceLocation SADDLE = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/hippogryph/saddle.png");
 
     public HippogryphRenderer(EntityRendererProvider.Context cntxt) {
         super(cntxt, new HippogryphModel<>(cntxt.bakeLayer(HippogryphModel.LAYER_LOCATION)), 0.7F);
         addLayer(new SaddleLayer<>(this, new HippogryphModel<>(cntxt.bakeLayer(HippogryphModel.LAYER_LOCATION)), SADDLE));
         addLayer(new PassengerLayer<>(this));
+        addLayer(new HippogryphArmorLayer(this, cntxt.getModelSet()));
     }
 
     public ResourceLocation getTextureLocation(Hippogryph entity) {
