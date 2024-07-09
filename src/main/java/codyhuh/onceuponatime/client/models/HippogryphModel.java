@@ -176,7 +176,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 		else {
 			this.root.xRot = 0.0F;
 
-			this.tail.xRot = 0.0F;
+			this.tail.xRot = 0.35F;
 
 			this.l_wing_1.xRot = -0.22F;
 			this.l_wing_1.yRot = -0.35F;
