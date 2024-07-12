@@ -136,7 +136,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 			this.r_wing_1.xRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 0.5F;
 			this.r_wing_1.yRot = 0.0F;
 			this.r_wing_1.zRot = -(1.3F + Mth.sin(limbSwing * 0.5F) * limbSwingAmount * 2.5F);
-			this.r_wing_1.x = -5.0F;
+			this.r_wing_1.x = -4.5F;
 			this.r_wing_1.y = -4.5F;
 			this.r_wing_1.z = -1.0F;
 
