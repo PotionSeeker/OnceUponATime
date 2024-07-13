@@ -83,7 +83,10 @@ public class Hippogryph extends AbstractHorse {
         boolean flying = this.isFlying();
         float speed = (float) this.getAttributeValue(flying ? Attributes.FLYING_SPEED : Attributes.MOVEMENT_SPEED);
 
-        if (isControlledByLocalInstance() && getControllingPassenger() != null && getControllingPassenger() instanceof Player rider) {
+        if (isNoAi()) {
+            return;
+        }
+        else if (isControlledByLocalInstance() && getControllingPassenger() != null && getControllingPassenger() instanceof Player rider) {
             double moveX = rider.xxa * 0.5;
             double moveY = vec3d.y;
             double moveZ = rider.zza;
@@ -119,7 +122,7 @@ public class Hippogryph extends AbstractHorse {
                 return;
             }
         }
-        if (flying && !isNoAi()) {
+        if (level().isClientSide() && flying && !isNoAi()) {
             this.moveRelative(speed, vec3d);
             this.move(MoverType.SELF, getDeltaMovement());
             double down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;

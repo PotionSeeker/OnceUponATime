@@ -107,7 +107,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		ears.visible = !entity.isWearingArmor();
 
-		if (!entity.onGround() && (entity.isFlying() || entity.isLanding())) {
+		if (!entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()))) {
 			limbSwing = ageInTicks * 0.75F;
 			limbSwingAmount = 0.3F;
 
