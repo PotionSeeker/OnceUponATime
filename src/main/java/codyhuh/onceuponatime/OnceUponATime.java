@@ -2,12 +2,15 @@ package codyhuh.onceuponatime;
 
 import codyhuh.onceuponatime.client.ClientProxy;
 import codyhuh.onceuponatime.common.CommonProxy;
+import codyhuh.onceuponatime.registry.ModCreativeTabs;
 import codyhuh.onceuponatime.registry.ModEntities;
 import codyhuh.onceuponatime.registry.ModFeatures;
 import codyhuh.onceuponatime.registry.ModItems;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(OnceUponATime.MOD_ID)
@@ -21,7 +24,13 @@ public class OnceUponATime {
         ModEntities.ENTITIES.register(bus);
         ModItems.ITEMS.register(bus);
         ModFeatures.FEATURES.register(bus);
+        ModCreativeTabs.TABS.register(bus);
 
         PROXY.commonInit();
+    }
+
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> PROXY.clientInit());
     }
 }
