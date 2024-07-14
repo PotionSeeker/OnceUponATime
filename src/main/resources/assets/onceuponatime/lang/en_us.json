@@ -2,8 +2,10 @@
   "itemGroup.onceuponatime": "Once Upon a Time",
 
   "entity.onceuponatime.hippogryph": "Hippogryph",
+  "entity.onceuponatime.unicorn": "Unicorn",
 
   "item.onceuponatime.hippogryph_spawn_egg": "Hippogryph Spawn Egg",
+  "item.onceuponatime.unicorn_spawn_egg": "Unicorn Spawn Egg",
   "item.onceuponatime.golden_hippogryph_armor": "Golden Hippogryph Armor",
   "item.onceuponatime.leather_hippogryph_armor": "Leather Hippogryph Armor",
   "item.onceuponatime.diamond_hippogryph_armor": "Diamond Hippogryph Armor",

@@ -3,8 +3,6 @@ package codyhuh.onceuponatime.client.models;
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -16,7 +14,7 @@ import net.minecraft.util.Mth;
 import java.util.Collections;
 
 public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "griffin"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hippogryph"), "main");
 	private final ModelPart root;
 	private final ModelPart body;
 	private final ModelPart l_wing_1;
@@ -110,7 +108,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 		if (!entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()))) {
 			limbSwing = ageInTicks * 0.75F;
 			limbSwingAmount = 0.3F;
-			headPitch = Mth.clamp(headPitch, -0.9F, 0.9F);
+			headPitch = Mth.clamp(headPitch, -5F, 5F);
 
 			this.root.xRot = headPitch * ((float)Math.PI / 180F);
 

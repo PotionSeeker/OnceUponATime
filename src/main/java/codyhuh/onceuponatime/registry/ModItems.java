@@ -13,6 +13,7 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OnceUponATime.MOD_ID);
 
     public static final RegistryObject<Item> HIPPOGRYPH_SPAWN_EGG = ITEMS.register("hippogryph_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.HIPPOGRYPH, 0x643c23, 0xdad7cf, new Item.Properties()));
+    public static final RegistryObject<Item> UNICORN_SPAWN_EGG = ITEMS.register("unicorn_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.UNICORN, 0xfff2d1, 0xf4aa8d, new Item.Properties()));
     public static final RegistryObject<Item> IRON_HIPPOGRYPH_ARMOR = ITEMS.register("iron_hippogryph_armor", () -> new HippogryphArmorItem(5, "iron", new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> GOLDEN_HIPPOGRYPH_ARMOR = ITEMS.register("golden_hippogryph_armor", () -> new HippogryphArmorItem(7, "gold", new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> DIAMOND_HIPPOGRYPH_ARMOR = ITEMS.register("diamond_hippogryph_armor", () -> new HippogryphArmorItem(11, "diamond", new Item.Properties().stacksTo(1)));
