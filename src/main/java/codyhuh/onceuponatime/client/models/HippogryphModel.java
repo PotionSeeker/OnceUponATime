@@ -110,6 +110,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 		if (!entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()))) {
 			limbSwing = ageInTicks * 0.75F;
 			limbSwingAmount = 0.3F;
+			headPitch = Mth.clamp(headPitch, -0.9F, 0.9F);
 
 			this.root.xRot = headPitch * ((float)Math.PI / 180F);
 

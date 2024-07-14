@@ -33,8 +33,12 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public void tick() {
-        if (mob.wantsToFly() && !mob.onGround() && mob.getNavigation().isDone()) {
+        if (mob.wantsToFly() && mob.getNavigation().isDone()) {
             trigger();
+        }
+        if (mob.isInWater()) {
+            mob.setFlying(true);
+            mob.setDeltaMovement(0.0D, 0.25D, 0.0D);
         }
 
         speedModifier = mob.isFlying() && !mob.isControlledByLocalInstance() ? 10.0D : 1.0D;
@@ -48,7 +52,7 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
     @Override
     protected Vec3 getPosition() {
         Vec3 vec3 = this.mob.getViewVector(1.0F);
-        int i = 32;
+        int i = 8;
         Vec3 pos = findPos(this.mob, i, 4, vec3.x, vec3.z, ((float)Math.PI / 2F), 8, 6);
         return pos != null ? pos : AirAndWaterRandomPos.getPos(this.mob, i, 4, -2, vec3.x, vec3.z, ((float)Math.PI / 2F));
     }

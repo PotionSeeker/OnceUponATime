@@ -122,11 +122,14 @@ public class Hippogryph extends AbstractHorse {
                 return;
             }
         }
-        if (level().isClientSide() && flying && !isNoAi()) {
+        if (flying && !isNoAi()) {
             this.moveRelative(speed, vec3d);
             this.move(MoverType.SELF, getDeltaMovement());
-            double down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;
-            this.setDeltaMovement(getDeltaMovement().scale(0.91f).add(0,down,0));
+            double down = 0.0F;
+            if (level().isClientSide()) {
+                down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;
+            }
+            this.setDeltaMovement(getDeltaMovement().scale(0.91F).add(0.0F, down, 0.0F));
             this.calculateEntityAnimation(true);
         }
         else {
@@ -146,7 +149,7 @@ public class Hippogryph extends AbstractHorse {
     }
 
     public boolean wantsToFly() {
-        return canFly() && getFlightTicks() <= MAX_FLIGHT_TICKS;
+        return /*canFly() &&*/ getFlightTicks() <= MAX_FLIGHT_TICKS;
     }
 
     @Override
