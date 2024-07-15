@@ -105,7 +105,7 @@ public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 		this.head.yRot = netHeadYaw * 0.017453292F;
 
 		this.head.xRot += 0.435F + Mth.cos(limbSwing * 0.6F) * 0.5F * limbSwingAmount;
-		this.head.y = -1.0F + Mth.cos(1.0F - limbSwing * 0.6F) * 1.0F * limbSwingAmount;
+		this.head.y = -3.0F + Mth.cos(1.0F - limbSwing * 0.6F) * 1.0F * limbSwingAmount;
 		this.head.z = -6.0F + Mth.cos(1.0F - limbSwing * 0.6F) * 1.0F * limbSwingAmount;
 
 		this.tail.xRot = 0.25F + Mth.cos(limbSwing * 0.6F) * 0.2F * limbSwingAmount;

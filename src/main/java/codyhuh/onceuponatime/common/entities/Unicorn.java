@@ -1,9 +1,11 @@
 package codyhuh.onceuponatime.common.entities;
 
 import codyhuh.onceuponatime.registry.ModEntities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -72,6 +74,16 @@ public class Unicorn extends AbstractHorse {
     @Override
     public void tick() {
         super.tick();
+
+        if (level().isClientSide() && tickCount % 15 == 0) {
+            Vec3 pos = getYawVec(getYHeadRot(), getXRot(), 0.0F, 1.85F, 1.15F).add(position());
+
+            level().addParticle(ParticleTypes.FIREWORK, pos.x, pos.y, pos.z, 0.0D, 0.05D, getYawVec(getYHeadRot(), getXRot(), 0.0F, 0.0F, -0.1F).z);
+        }
+    }
+
+    public static Vec3 getYawVec(float yaw, float pitch, double xOffset, double yOffset, double zOffset) {
+        return new Vec3(xOffset, yOffset, zOffset).xRot(-pitch * (Mth.PI / 180f) * 0.5F).yRot(-yaw * (Mth.PI / 180f));
     }
 
     @Override
