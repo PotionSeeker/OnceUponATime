@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class Unicorn extends AbstractHorse {
+public class Unicorn extends AbstractHorse implements PowerableMob {
 
     public Unicorn(EntityType<? extends AbstractHorse> type, Level level) {
         super(type, level);
@@ -41,6 +41,11 @@ public class Unicorn extends AbstractHorse {
 
     public static AttributeSupplier.Builder createUnicornAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 12.0D).add(Attributes.JUMP_STRENGTH, 1.25D).add(Attributes.MOVEMENT_SPEED, 0.25F);
+    }
+
+    @Override
+    public boolean isPowered() {
+        return true;
     }
 
     @Override
@@ -76,13 +81,19 @@ public class Unicorn extends AbstractHorse {
         super.tick();
 
         if (level().isClientSide() && tickCount % 15 == 0) {
-            Vec3 pos = getYawVec(getYHeadRot(), getXRot(), 0.0F, 1.85F, 1.15F).add(position());
+            Vec3 pos = getYawPitchVec(getYHeadRot(), getXRot(), 0.0F, 1.85F, 1.15F).add(position());
+            Vec3 viewVec = getLookAngle();
 
-            level().addParticle(ParticleTypes.FIREWORK, pos.x, pos.y, pos.z, 0.0D, 0.05D, getYawVec(getYHeadRot(), getXRot(), 0.0F, 0.0F, -0.1F).z);
+            //level().addParticle(ParticleTypes.FIREWORK, pos.x, pos.y, pos.z, 0.1D * -viewVec.x, 0.1D, 0.1D * -viewVec.z);
+            //level().addParticle(ParticleTypes.END_ROD, pos.x, pos.y, pos.z, 0.0D, 0.175D, 0.0D);
         }
     }
 
-    public static Vec3 getYawVec(float yaw, float pitch, double xOffset, double yOffset, double zOffset) {
+    public static Vec3 getYawVec(float yaw, double xOffset, double yOffset, double zOffset) {
+        return new Vec3(xOffset, yOffset, zOffset).yRot(-yaw * (Mth.PI / 180f));
+    }
+
+    public static Vec3 getYawPitchVec(float yaw, float pitch, double xOffset, double yOffset, double zOffset) {
         return new Vec3(xOffset, yOffset, zOffset).xRot(-pitch * (Mth.PI / 180f) * 0.5F).yRot(-yaw * (Mth.PI / 180f));
     }
 

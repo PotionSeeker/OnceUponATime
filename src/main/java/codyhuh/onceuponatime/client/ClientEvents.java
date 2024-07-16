@@ -10,6 +10,9 @@ import codyhuh.onceuponatime.registry.ModEntities;
 import codyhuh.onceuponatime.registry.ModItems;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.model.CreeperModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,7 +32,8 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions e) {
         e.registerLayerDefinition(HippogryphModel.LAYER_LOCATION, HippogryphModel::createBodyLayer);
-        e.registerLayerDefinition(UnicornModel.LAYER_LOCATION, UnicornModel::createBodyLayer);
+        e.registerLayerDefinition(UnicornModel.LAYER_LOCATION, () -> UnicornModel.createBodyLayer(CubeDeformation.NONE));
+        e.registerLayerDefinition(UnicornModel.POWER_LAYER_LOCATION, () -> UnicornModel.createBodyLayer(new CubeDeformation(0.25F)));
     }
 
     @SubscribeEvent
