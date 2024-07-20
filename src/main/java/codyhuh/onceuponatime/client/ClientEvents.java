@@ -32,8 +32,8 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions e) {
         e.registerLayerDefinition(HippogryphModel.LAYER_LOCATION, HippogryphModel::createBodyLayer);
-        e.registerLayerDefinition(UnicornModel.LAYER_LOCATION, () -> UnicornModel.createBodyLayer(CubeDeformation.NONE));
-        e.registerLayerDefinition(UnicornModel.POWER_LAYER_LOCATION, () -> UnicornModel.createBodyLayer(new CubeDeformation(0.25F)));
+        e.registerLayerDefinition(UnicornModel.LAYER_LOCATION, UnicornModel::createBodyLayer);
+        e.registerLayerDefinition(UnicornModel.POWER_LAYER_LOCATION, UnicornModel::createBodyLayer);
     }
 
     @SubscribeEvent

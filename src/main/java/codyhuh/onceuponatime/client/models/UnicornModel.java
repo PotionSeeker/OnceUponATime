@@ -18,8 +18,7 @@ import java.util.Collections;
 public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "unicorn"), "main");
 	public static final ModelLayerLocation POWER_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "unicorn"), "armor");
-	public final ModelPart horn_overlay;
-	public final ModelPart horn;
+	private final ModelPart horn;
 	private final ModelPart root;
 	private final ModelPart back_body;
 	private final ModelPart l_leg2;
@@ -46,13 +45,12 @@ public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 		this.l_leg1 = body.getChild("l_leg1");
 		this.head = body.getChild("head");
 		this.horn = head.getChild("horn");
-		this.horn_overlay = horn.getChild("horn_overlay");
 		this.mane = head.getChild("mane");
 		this.l_ear = head.getChild("l_ear");
 		this.r_ear = head.getChild("r_ear");
 	}
 
-	public static LayerDefinition createBodyLayer(CubeDeformation cubeDeformation) {
+	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -90,10 +88,6 @@ public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 		PartDefinition horn = head.addOrReplaceChild("horn", CubeListBuilder.create(), PartPose.offset(0.0F, -11.0F, -2.0F));
 
 		PartDefinition cube_r3 = horn.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(12, 53).addBox(-1.0F, -10.0F, -1.0F, 2.0F, 11.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
-
-		PartDefinition horn_overlay = horn.addOrReplaceChild("horn_overlay", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-		PartDefinition cube_r4 = horn_overlay.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, 74).addBox(-1.0F, -10.0F, -1.0F, 2.0F, 11.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition mane = head.addOrReplaceChild("mane", CubeListBuilder.create().texOffs(0, 31).addBox(-1.0F, -10.0F, -5.0F, 2.0F, 10.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 4.0F));
 
