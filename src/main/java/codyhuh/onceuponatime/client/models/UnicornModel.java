@@ -93,7 +93,7 @@ public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 
 		PartDefinition horn_overlay = horn.addOrReplaceChild("horn_overlay", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition cube_r4 = horn_overlay.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(20, 53).addBox(-1.0F, -10.0F, -1.0F, 2.0F, 11.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
+		PartDefinition cube_r4 = horn_overlay.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, 74).addBox(-1.0F, -10.0F, -1.0F, 2.0F, 11.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.2618F, 0.0F, 0.0F));
 
 		PartDefinition mane = head.addOrReplaceChild("mane", CubeListBuilder.create().texOffs(0, 31).addBox(-1.0F, -10.0F, -5.0F, 2.0F, 10.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.0F, 4.0F));
 
@@ -123,21 +123,6 @@ public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 		this.l_leg2.xRot = Mth.cos(limbSwing * 0.6F + 3.1415927F) * 1.4F * limbSwingAmount;
 		this.r_leg1.xRot = Mth.cos(limbSwing * 0.6F + 3.1415927F) * 1.4F * limbSwingAmount;
 		this.l_leg1.xRot = Mth.cos(limbSwing * 0.6F) * 1.4F * limbSwingAmount;
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha) {
-		super.renderToBuffer(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
-	}
-
-	public void hideParts(boolean hidden) {
-		this.root.visible = false;
-		this.horn_overlay.visible = true;
-	}
-
-	public void showParts(boolean hidden) {
-		this.root.visible = true;
-		this.horn_overlay.visible = true;
 	}
 
 	@Override

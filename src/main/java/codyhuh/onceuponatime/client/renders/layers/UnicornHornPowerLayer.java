@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Vector3f;
 
 public class UnicornHornPowerLayer<T extends Unicorn, M extends UnicornModel<T>> extends RenderLayer<T, M> {
    private static final ResourceLocation POWER_LOCATION = new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/unicorn/unicorn_power.png");
@@ -29,16 +30,12 @@ public class UnicornHornPowerLayer<T extends Unicorn, M extends UnicornModel<T>>
          float f = (float)pLivingEntity.tickCount + pPartialTicks;
 
          VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.energySwirl(POWER_LOCATION, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F));
-         pPoseStack.pushPose();
-         model.horn_overlay.translateAndRotate(pPoseStack);
-         model.horn_overlay.render(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
-         pPoseStack.popPose();
+         //model.horn_overlay.render(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
 
-         model.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks);
          this.getParentModel().copyPropertiesTo(model);
+         model.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks);
          model.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-
-         //model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
+         model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
       }
    }
 
