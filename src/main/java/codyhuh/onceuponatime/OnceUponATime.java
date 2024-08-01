@@ -2,10 +2,7 @@ package codyhuh.onceuponatime;
 
 import codyhuh.onceuponatime.client.ClientProxy;
 import codyhuh.onceuponatime.common.CommonProxy;
-import codyhuh.onceuponatime.registry.ModCreativeTabs;
-import codyhuh.onceuponatime.registry.ModEntities;
-import codyhuh.onceuponatime.registry.ModFeatures;
-import codyhuh.onceuponatime.registry.ModItems;
+import codyhuh.onceuponatime.registry.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -25,6 +22,7 @@ public class OnceUponATime {
         ModItems.ITEMS.register(bus);
         ModFeatures.FEATURES.register(bus);
         ModCreativeTabs.TABS.register(bus);
+        ModSounds.SOUND_EVENTS.register(bus);
 
         PROXY.commonInit();
     }
