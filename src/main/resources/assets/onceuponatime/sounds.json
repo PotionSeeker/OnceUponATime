@@ -3,13 +3,13 @@
     "category": "neutral",
     "sounds": [
       {
-        "name": "onceuponatime:sheen_1"
+        "name": "onceuponatime:unicorn/sheen_1"
       },
       {
-        "name": "onceuponatime:sheen_2"
+        "name": "onceuponatime:unicorn/sheen_2"
       },
       {
-        "name": "onceuponatime:sheen_3"
+        "name": "onceuponatime:unicorn/sheen_3"
       }
     ],
     "subtitle": "sound.onceuponatime.unicorn.sheen"
