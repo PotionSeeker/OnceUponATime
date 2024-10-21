@@ -1,8 +1,10 @@
 package codyhuh.onceuponatime.client.models;
 
 import codyhuh.onceuponatime.OnceUponATime;
+import codyhuh.onceuponatime.client.animations.HippogryphAnimation;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.model.AgeableHierarchicalModel;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,7 +15,7 @@ import net.minecraft.util.Mth;
 
 import java.util.Collections;
 
-public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
+public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hippogryph"), "main");
 	private final ModelPart root;
 	private final ModelPart body;
@@ -32,7 +34,8 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 	private final ModelPart r_wing_1_feathers;
 
 	public HippogryphModel(ModelPart base) {
-		this.root = base.getChild("root");
+        super(0.5F, 0.0F);
+        this.root = base.getChild("root");
 		this.l_leg_1 = root.getChild("l_leg_1");
 		this.r_leg_1 = root.getChild("r_leg_1");
 		this.l_leg_2a = root.getChild("l_tight");
@@ -105,137 +108,22 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableListModel<T> {
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		ears.visible = !entity.isWearingArmor();
 
-		if (!entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()))) {
-			limbSwing = ageInTicks * 0.75F;
-			limbSwingAmount = 0.3F;
-			headPitch = Mth.clamp(headPitch, -5F, 5F);
+		this.head.xRot = headPitch * 0.017453292F;
+		this.head.yRot = netHeadYaw * 0.017453292F;
 
-			this.root.xRot = headPitch * ((float)Math.PI / 180F);
 
-			this.l_wing_1_feathers.visible = true;
-			this.r_wing_1_feathers.visible = true;
+		if (this.young) this.applyStatic(HippogryphAnimation.BABY_TRANSFORM);
 
-			this.head.xRot = 0.435F;
-			this.head.yRot = 0.0F;
+		boolean flying = !entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()));
 
-			this.tail.xRot = 1.13446F;
-
-			this.l_wing_1.xRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 0.5F;
-			this.l_wing_1.yRot = 0.0F;
-			this.l_wing_1.zRot = 1.3F + Mth.sin(limbSwing * 0.5F) * limbSwingAmount * 2.5F;
-			this.l_wing_1.x = 4.0F;
-			this.l_wing_1.y = -4.5F;
-			this.l_wing_1.z = -1.0F;
-
-			this.l_wing_2.xRot = -0.0872665F;
-			this.l_wing_2.yRot = 0.0F;
-			this.l_wing_2.zRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 1.25F;
-			this.l_wing_2.z = -1.5F;
-
-			this.r_wing_1.xRot = -Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 0.5F;
-			this.r_wing_1.yRot = 0.0F;
-			this.r_wing_1.zRot = -(1.3F + Mth.sin(limbSwing * 0.5F) * limbSwingAmount * 2.5F);
-			this.r_wing_1.x = -4.5F;
-			this.r_wing_1.y = -4.5F;
-			this.r_wing_1.z = -1.0F;
-
-			this.r_wing_2.xRot = -0.0872665F;
-			this.r_wing_2.yRot = 0.0F;
-			this.r_wing_2.zRot = -(-Mth.cos(limbSwing * 0.5F) * limbSwingAmount * 1.25F);
-			this.r_wing_2.z = -1.5F;
-
-			this.l_leg_1.xRot = -1.143F;
-			this.l_leg_1.yRot = -0.179F;
-			this.l_leg_1.zRot = 0.0872F;
-			this.l_leg_1.y = 5.0F;
-			this.l_leg_1.z = -3.0F;
-
-			this.r_leg_1.xRot = -1.143F;
-			this.r_leg_1.yRot = 0.179F;
-			this.r_leg_1.zRot = -0.0872F;
-			this.r_leg_1.y = 5.0F;
-			this.r_leg_1.z = -3.0F;
-
-			this.r_leg_2a.xRot = 0.953F;
-			this.r_leg_2a.yRot = 0.0617F;
-			this.r_leg_2a.zRot = 0.0617F;
-
-			//this.r_leg_2b.xRot = 0.9167F;
-			//this.r_leg_2b.yRot = 0.02655F;
-			//this.r_leg_2b.zRot = 0.02655F;
-
-			this.l_leg_2a.xRot = 0.953F;
-			this.l_leg_2a.yRot = -0.0617F;
-			this.l_leg_2a.zRot = -0.0617F;
-
-			//this.l_leg_2b.xRot = 0.9167F;
-			//this.l_leg_2b.yRot = -0.02655F;
-			//this.l_leg_2b.zRot = -0.02655F;
+		if (flying) {
+			this.animateWalk(HippogryphAnimation.FLY, ageInTicks * 0.75F, 0.3F, 3.0F, 100.0F);
 		}
-		else {
-			this.root.xRot = 0.0F;
 
-			this.tail.xRot = 0.35F;
-
-			this.l_wing_1.xRot = -0.22F;
-			this.l_wing_1.yRot = -0.35F;
-			this.l_wing_1.zRot = 2.35F;
-			this.l_wing_1.x = 4.0F;
-			this.l_wing_1.y = -4.5F;
-			this.l_wing_1.z = -1.0F;
-
-			this.l_wing_2.xRot = -1.5708F;
-			this.l_wing_2.yRot = 0.0F;
-			this.l_wing_2.zRot = 0.0F;
-			this.l_wing_2.z = 1.5F;
-
-			this.r_wing_1.xRot = -0.22F;
-			this.r_wing_1.yRot = 0.35F;
-			this.r_wing_1.zRot = -2.35F;
-			this.r_wing_1.x = -5.0F;
-			this.r_wing_1.y = -4.5F;
-			this.r_wing_1.z = -1.0F;
-
-			this.r_wing_2.xRot = -1.5708F;
-			this.r_wing_2.yRot = 0.0F;
-			this.r_wing_2.zRot = 0.0F;
-			this.r_wing_2.z = 1.5F;
-
-			this.l_wing_1_feathers.visible = false;
-			this.r_wing_1_feathers.visible = false;
-
-			this.l_leg_1.xRot = Mth.cos(limbSwing + 2.0F) * limbSwingAmount * 0.7F;
-			this.l_leg_1.yRot = -0.025F;
-			this.l_leg_1.zRot = 0.0F;
-			this.l_leg_1.y = 6.0F;
-			this.l_leg_1.z = -6.0F;
-
-			this.r_leg_1.xRot = -Mth.cos(limbSwing + 2.0F) * limbSwingAmount * 0.7F;
-			this.r_leg_1.yRot = 0.025F;
-			this.r_leg_1.zRot = 0.0F;
-			this.r_leg_1.y = 6.0F;
-			this.r_leg_1.z = -6.0F;
-
-			this.r_leg_2a.xRot = Mth.cos(limbSwing + 2.0F) * limbSwingAmount * 0.7F;
-			this.r_leg_2a.yRot = 0.0F;
-			this.r_leg_2a.zRot = 0.0F;
-
-			this.l_leg_2a.xRot = -Mth.cos(limbSwing + 2.0F) * limbSwingAmount * 0.7F;
-			this.l_leg_2a.yRot = 0.0F;
-			this.l_leg_2a.zRot = 0.0F;
-
-			this.head.xRot = headPitch * ((float)Math.PI / 180F);
-			this.head.yRot = netHeadYaw * ((float)Math.PI / 180F);
-		}
 	}
 
 	@Override
-	protected Iterable<ModelPart> headParts() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	protected Iterable<ModelPart> bodyParts() {
-		return ImmutableList.of(root);
+	public ModelPart root() {
+		return root;
 	}
 }

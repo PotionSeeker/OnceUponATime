@@ -7,6 +7,7 @@ import codyhuh.onceuponatime.common.entities.lookcontrol.FlyingLookControl;
 import codyhuh.onceuponatime.common.entities.movecontrol.GroundAndFlyingMoveControl;
 import codyhuh.onceuponatime.common.items.HippogryphArmorItem;
 import codyhuh.onceuponatime.registry.ModEntities;
+import codyhuh.onceuponatime.registry.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -232,9 +234,25 @@ public class Hippogryph extends AbstractHorse {
     }
 
     public boolean canFly() {
-        BlockPos pos = blockPosition();
+        return !level().getBlockState(blockPosition().offset(0, -1, 0)).isSolid();
+    }
 
-        return !level().getBlockState(pos.offset(0, -1, 0)).isSolid();
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return ModSounds.HIPPOGRYPH_IDLE.get();
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.HIPPOGRYPH_DEATH.get();
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return ModSounds.HIPPOGRYPH_HURT.get();
     }
 
     @Nullable

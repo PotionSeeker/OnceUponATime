@@ -7,9 +7,9 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class ClientRenderType extends RenderType {
+public class ModRenderTypes extends RenderType {
 
-    public ClientRenderType(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
+    public ModRenderTypes(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
         super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
     }
 
@@ -18,7 +18,7 @@ public class ClientRenderType extends RenderType {
                 "unicorn_horn",
                 DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.QUADS, 256, false, true,
-                RenderType.CompositeState.builder().setShaderState(ClientShaders.RENDERTYPE_UNICORN_HORN)
+                RenderType.CompositeState.builder().setShaderState(ClientEvents.RENDERTYPE_UNICORN_HORN)
                         .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
                                 .add(pLocation, false, false)
                                 .add(new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/unicorn/unicorn_mask.png"), false, false)

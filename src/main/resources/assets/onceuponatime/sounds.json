@@ -13,5 +13,53 @@
       }
     ],
     "subtitle": "sound.onceuponatime.unicorn.sheen"
+  },
+  "hippogryph.idle": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "onceuponatime:hippogryph/idle_1"
+      },
+      {
+        "name": "onceuponatime:hippogryph/idle_2"
+      },
+      {
+        "name": "onceuponatime:hippogryph/idle_3"
+      },
+      {
+        "name": "onceuponatime:hippogryph/idle_4"
+      },
+      {
+        "name": "onceuponatime:hippogryph/idle_5"
+      }
+    ],
+    "subtitle": "sound.onceuponatime.hippogryph.idle"
+  },
+  "hippogryph.hurt": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "onceuponatime:hippogryph/hurt_1"
+      },
+      {
+        "name": "onceuponatime:hippogryph/hurt_2"
+      },
+      {
+        "name": "onceuponatime:hippogryph/3"
+      }
+    ],
+    "subtitle": "sound.onceuponatime.hippogryph.hurt"
+  },
+  "hippogryph.death": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "onceuponatime:hippogryph/death_1"
+      },
+      {
+        "name": "onceuponatime:hippogryph/death_2"
+      }
+    ],
+    "subtitle": "sound.onceuponatime.hippogryph.death"
   }
 }

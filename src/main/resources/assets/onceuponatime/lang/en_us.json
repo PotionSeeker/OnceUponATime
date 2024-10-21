@@ -14,5 +14,8 @@
   "key.category.onceuponatime": "Once Upon a Time",
   "key.flightDescend": "Flight Descend",
 
-  "sound.onceuponatime.unicorn.sheen": "Unicorn horn sheens"
+  "sound.onceuponatime.unicorn.sheen": "Horn sheens",
+  "sound.onceuponatime.hippogryph.idle": "Hippogryph whinnies",
+  "sound.onceuponatime.hippogryph.hurt": "Hippogryph hurts",
+  "sound.onceuponatime.hippogryph.death": "Hippogryph dies"
 }
