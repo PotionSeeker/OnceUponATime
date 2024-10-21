@@ -106,11 +106,12 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.root().getAllParts().forEach(ModelPart::resetPose);
+
 		ears.visible = !entity.isWearingArmor();
 
 		this.head.xRot = headPitch * 0.017453292F;
 		this.head.yRot = netHeadYaw * 0.017453292F;
-
 
 		if (this.young) this.applyStatic(HippogryphAnimation.BABY_TRANSFORM);
 
@@ -119,7 +120,6 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 		if (flying) {
 			this.animateWalk(HippogryphAnimation.FLY, ageInTicks * 0.75F, 0.3F, 3.0F, 100.0F);
 		}
-
 	}
 
 	@Override
