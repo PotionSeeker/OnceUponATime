@@ -117,7 +117,13 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 
 		boolean flying = !entity.onGround() && (entity.isVehicle() || (entity.isFlying() || entity.isLanding()));
 
-		if (flying) {
+
+		if (entity.onGround()) {
+			//this.animateWalk(HippogryphAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			//r_wing_1_feathers.visible = false;
+			//l_wing_1_feathers.visible = false;
+		}
+		else if (flying) {
 			this.animateWalk(HippogryphAnimation.FLY, ageInTicks * 0.75F, 0.3F, 3.0F, 100.0F);
 		}
 	}

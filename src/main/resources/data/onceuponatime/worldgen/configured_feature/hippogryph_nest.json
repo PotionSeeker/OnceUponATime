@@ -1,0 +1,8 @@
+{
+  "type": "onceuponatime:hippogryph_nest",
+  "config": {
+    "structures": [
+      "onceuponatime:hippogryph_nest"
+    ]
+  }
+}

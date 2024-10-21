@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#onceuponatime:has_hippogryph_nests",
+  "features": "onceuponatime:hippogryph_nest",
+  "step": "surface_structures"
+}
