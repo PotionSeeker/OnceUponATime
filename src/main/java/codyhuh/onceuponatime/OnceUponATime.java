@@ -23,6 +23,7 @@ public class OnceUponATime {
         ModFeatures.FEATURES.register(bus);
         ModCreativeTabs.TABS.register(bus);
         ModSounds.SOUND_EVENTS.register(bus);
+        ModBlocks.BLOCKS.register(bus);
 
         PROXY.commonInit();
     }

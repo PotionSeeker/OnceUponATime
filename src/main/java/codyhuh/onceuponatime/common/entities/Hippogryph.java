@@ -110,7 +110,7 @@ public class Hippogryph extends AbstractHorse {
                     setFlying(true);
                 }
                 else {
-                    speed *= 1.5F;
+                    speed *= 1.15F;
                 }
 
                 vec3d = new Vec3(moveX, moveY, moveZ);
