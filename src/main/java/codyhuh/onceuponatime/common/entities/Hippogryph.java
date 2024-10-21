@@ -374,24 +374,25 @@ public class Hippogryph extends AbstractHorse {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
 
         if (!this.isVehicle() && !this.isBaby()) {
-            if (this.isTamed() && pPlayer.isSecondaryUseActive()) {
-                this.openCustomInventoryScreen(pPlayer);
-                return InteractionResult.sidedSuccess(this.level().isClientSide);
-            }
-            else {
-                if (!itemstack.isEmpty()) {
-                    InteractionResult interactionresult = itemstack.interactLivingEntity(pPlayer, this, pHand);
-                    if (interactionresult.consumesAction()) {
-                        return interactionresult;
+            if (this.isTamed()) {
+                if (pPlayer.isSecondaryUseActive()) {
+                    this.openCustomInventoryScreen(pPlayer);
+                    return InteractionResult.sidedSuccess(this.level().isClientSide);
+                } else {
+                    if (!itemstack.isEmpty()) {
+                        InteractionResult interactionresult = itemstack.interactLivingEntity(pPlayer, this, pHand);
+                        if (interactionresult.consumesAction()) {
+                            return interactionresult;
+                        }
+
+                        if (this.canWearArmor() && this.isArmor(itemstack) && !this.isWearingArmor()) {
+                            this.equipArmor(pPlayer, itemstack);
+                            return InteractionResult.sidedSuccess(this.level().isClientSide);
+                        }
                     }
 
-                    if (this.canWearArmor() && this.isArmor(itemstack) && !this.isWearingArmor()) {
-                        this.equipArmor(pPlayer, itemstack);
-                        return InteractionResult.sidedSuccess(this.level().isClientSide);
-                    }
+                    this.doPlayerRide(pPlayer);
                 }
-
-                this.doPlayerRide(pPlayer);
             }
             if (!isTamed() && itemstack.is(Items.RABBIT) && !ForgeEventFactory.onAnimalTame(this, pPlayer)) {
                 tameWithName(pPlayer);

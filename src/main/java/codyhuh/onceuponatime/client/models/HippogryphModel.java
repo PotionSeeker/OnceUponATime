@@ -34,7 +34,7 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 	private final ModelPart r_wing_1_feathers;
 
 	public HippogryphModel(ModelPart base) {
-        super(0.5F, 25.0F);
+        super(0.5F, 24.0F);
         this.root = base.getChild("root");
 		this.l_leg_1 = root.getChild("l_leg_1");
 		this.r_leg_1 = root.getChild("r_leg_1");
