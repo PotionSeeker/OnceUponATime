@@ -78,7 +78,7 @@ public class Hippogryph extends AbstractHorse {
     }
 
     public static AttributeSupplier.Builder createHippogryphAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 40.0D).add(Attributes.JUMP_STRENGTH, 1.0D).add(Attributes.FLYING_SPEED, 0.25F).add(Attributes.MOVEMENT_SPEED, 0.2F);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 40.0D).add(Attributes.JUMP_STRENGTH, 1.0D).add(Attributes.FLYING_SPEED, 0.25F).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
 
     @Override
@@ -102,17 +102,17 @@ public class Hippogryph extends AbstractHorse {
             if (isControlledByLocalInstance()) {
                 if (isFlying()) {
                     moveX = vec3d.x;
-                    moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5 : 0F;
-                    moveZ = moveZ > 0 ? moveZ : 0;
+                    moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5F : 0.0F;
+                    moveZ = moveZ > 0.0F ? moveZ : 0.0F;
+                    speed *= 0.5F;
+                }
+                else if (rider.jumping) {
+                    jumpFromGround();
+                    setFlying(true);
                 }
                 else {
-                    if (rider.jumping) {
-                        jumpFromGround();
-                        setFlying(true);
-                    }
+                    speed *= 1.5F;
                 }
-
-                speed *= 0.5F;
 
                 vec3d = new Vec3(moveX, moveY, moveZ);
                 setSpeed(speed);
@@ -130,7 +130,7 @@ public class Hippogryph extends AbstractHorse {
             this.move(MoverType.SELF, getDeltaMovement());
             double down = 0.0F;
             if (level().isClientSide()) {
-                down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.01F : -0.02F;
+                down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.005F : -0.01F;
             }
             this.setDeltaMovement(getDeltaMovement().scale(0.91F).add(0.0F, down, 0.0F));
             this.calculateEntityAnimation(true);
@@ -261,8 +261,6 @@ public class Hippogryph extends AbstractHorse {
     public AgeableMob getBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent) {
         return ModEntities.HIPPOGRYPH.get().create(pLevel);
     }
-
-
 
     @Override
     protected void positionRider(Entity pPassenger, MoveFunction pCallback) {
