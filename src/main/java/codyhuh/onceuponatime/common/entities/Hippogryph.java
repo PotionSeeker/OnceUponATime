@@ -131,12 +131,17 @@ public class Hippogryph extends AbstractHorse {
             if (level().isClientSide()) {
                 down = (Minecraft.getInstance().options.keyLeft.isDown() || Minecraft.getInstance().options.keyRight.isDown() || Minecraft.getInstance().options.keyUp.isDown() || Minecraft.getInstance().options.keyJump.isDown()) ? -0.005F : -0.01F;
             }
-            this.setDeltaMovement(getDeltaMovement().scale(0.91F).add(0.0F, down, 0.0F));
+            this.setDeltaMovement(getDeltaMovement().scale(0.9F).add(0.0F, down, 0.0F));
             this.calculateEntityAnimation(true);
         }
         else {
             super.travel(vec3d);
         }
+    }
+
+    @Override
+    public boolean canJump() {
+        return false;
     }
 
     @Override
@@ -305,10 +310,8 @@ public class Hippogryph extends AbstractHorse {
             setXRot(-Mth.lerp(getXRot(), xTilt, xTilt));
         }
 
-        if (!isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
-            if (wanderGoal != null) {
-                wanderGoal.trigger();
-            }
+        if (wanderGoal != null && !isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
+            wanderGoal.trigger();
         }
 
         if (getFlightTicks() <= MAX_FLIGHT_TICKS && (isFlying() || isLanding()) && !isVehicle() && !isNoAi()) {
@@ -329,7 +332,6 @@ public class Hippogryph extends AbstractHorse {
 
         double x = getDeltaMovement().x();
         double z = getDeltaMovement().z();
-
         boolean notMoving = Math.abs(x) < 0.1D && Math.abs(z) < 0.1D;
 
         if (wanderGoal != null && isFlying() && !isLanding() && wantsToFly() && !isVehicle() && notMoving) {
