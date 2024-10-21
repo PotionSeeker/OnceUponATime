@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-// todo - untamed hippogrpyhs should not be able to be equipped with armor
 public class Hippogryph extends AbstractHorse {
     private static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_LANDING = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
@@ -307,8 +306,8 @@ public class Hippogryph extends AbstractHorse {
         }
 
         if (!isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
-            if (landGoal != null) {
-                landGoal.trigger();
+            if (wanderGoal != null) {
+                wanderGoal.trigger();
             }
         }
 
