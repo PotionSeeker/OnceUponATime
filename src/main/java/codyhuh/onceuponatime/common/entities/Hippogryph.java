@@ -262,9 +262,21 @@ public class Hippogryph extends AbstractHorse {
         return ModEntities.HIPPOGRYPH.get().create(pLevel);
     }
 
+
+
     @Override
     protected void positionRider(Entity pPassenger, MoveFunction pCallback) {
-        pPassenger.setPos(position().add(0.0D, 0.85D, 0.0D));
+        boolean flying = !onGround() && ((isFlying() || isLanding()));
+        double y = flying ? 0.65D : 0.9D;
+
+        pPassenger.setPos(position().add(0.0D, y, 0.0D));
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose pPose) {
+        boolean flying = !onGround() && ((isFlying() || isLanding()));
+
+        return flying ? super.getDimensions(pPose).scale(1.0F, 0.65F) : super.getDimensions(pPose);
     }
 
     @Override
@@ -282,7 +294,7 @@ public class Hippogryph extends AbstractHorse {
 
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pSize) {
-        return pSize.height * 1.15F;
+        return pSize.height;
     }
 
     @Override
@@ -291,7 +303,7 @@ public class Hippogryph extends AbstractHorse {
 
         if (isVehicle() && getControllingPassenger() != null && isFlying() || isLanding()) {
             float added = (float) position().y() * (float) getDeltaMovement().y();
-            float xTilt = Mth.clamp(added, -25.0F, 20.0F);
+            float xTilt = Mth.clamp(added, -15.0F, 20.0F);
 
             setXRot(-Mth.lerp(getXRot(), xTilt, xTilt));
         }

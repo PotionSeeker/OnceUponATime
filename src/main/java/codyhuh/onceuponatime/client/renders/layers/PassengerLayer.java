@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 public class PassengerLayer<T extends Hippogryph, M extends HippogryphModel<T>> extends RenderLayer<T, M> {
@@ -34,8 +35,8 @@ public class PassengerLayer<T extends Hippogryph, M extends HippogryphModel<T>> 
                 OnceUponATime.PROXY.releaseRenderingEntity(passenger.getUUID());
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.ZP.rotationDegrees(entity.tilt * 0.25F));
-                poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
-                poseStack.translate(0.0D, passenger.getBbHeight() - 1.15F, 0.0D);
+                getParentModel().root().translateAndRotate(poseStack);
+                poseStack.translate(0.0D, passenger.getBbHeight() - 1.5D, 0.0D);
                 poseStack.mulPose(Axis.XN.rotationDegrees(180F));
                 poseStack.mulPose(Axis.YN.rotationDegrees(360F - bodyYaw));
                 renderPassenger(passenger, 0, partialTicks, poseStack, pBuffer, pPackedLight);

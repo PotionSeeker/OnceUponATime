@@ -58,7 +58,6 @@ public class ClientEvents {
                 shaderInstance -> {
                     unicornHorn = shaderInstance;
                 }
-
         );
     }
 
