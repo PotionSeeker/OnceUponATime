@@ -118,9 +118,9 @@ public class Hippogryph extends AbstractHorse {
 
             if (isControlledByLocalInstance()) {
                 if (isFlying()) {
-                    moveX = vec3d.x;
+                    moveX = 0.0F;
                     moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5F : 0.0F;
-                    moveZ = moveZ > 0.0F ? moveZ : 0.0F;
+                    moveZ = moveZ > 0.0F ? moveZ : 0.15F;
                     speed *= 0.5F;
                 }
                 else if (rider.jumping) {
@@ -323,6 +323,11 @@ public class Hippogryph extends AbstractHorse {
 
         if (this.level().isClientSide()) {
             this.setupAnimationStates();
+        }
+
+        if (hasControllingPassenger() && isVehicle()) {
+            float clamp = Mth.clamp(getControllingPassenger().getXRot(), -15.0F, 20.0F);
+            setXRot(clamp);
         }
 
         if (wanderGoal != null && !isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {
