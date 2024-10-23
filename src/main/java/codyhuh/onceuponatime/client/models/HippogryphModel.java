@@ -10,15 +10,18 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Collections;
 
 public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hippogryph"), "main");
 	private final ModelPart root;
-	private final ModelPart body;
+	public final ModelPart body;
 	private final ModelPart l_wing_1;
 	private final ModelPart l_wing_2;
 	private final ModelPart r_wing_1;
@@ -91,11 +94,11 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 
 		PartDefinition cube_r2 = ears.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(78, 36).mirror().addBox(0.0F, 0.0F, -4.0F, 5.0F, 0.0F, 8.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.2618F));
 
-		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.0F))
-				.texOffs(66, 97).addBox(-6.0F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.1F))
-				.texOffs(0, 87).addBox(-6.0F, -4.0F, -4.8724F, 11.0F, 11.0F, 10.0F, new CubeDeformation(0.25F)), PartPose.offset(0.5F, -1.0F, 1.6224F));
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-5.5F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.05F))
+				.texOffs(66, 97).addBox(-5.5F, -4.0F, -9.8724F, 11.0F, 11.0F, 20.0F, new CubeDeformation(0.1F))
+				.texOffs(0, 87).addBox(-5.5F, -4.0F, -4.8724F, 11.0F, 11.0F, 10.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, -1.0F, 1.6224F));
 
-		PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(32, 61).addBox(-1.5F, -4.0F, 0.0F, 3.0F, 14.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 2.0F, 8.3776F, 0.3927F, 0.0F, 0.0F));
+		PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(32, 61).addBox(-1.5F, -4.0F, 0.0F, 3.0F, 14.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 2.0F, 8.3776F, 0.3927F, 0.0F, 0.0F));
 
 		PartDefinition l_tight = root.addOrReplaceChild("l_tight", CubeListBuilder.create().texOffs(0, 61).mirror().addBox(-2.0F, 0.0F, -1.75F, 4.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(3.5F, 6.0F, 9.5F));
 
@@ -107,24 +110,27 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
+		boolean flying = !entity.onGround() && (entity.isFlying() || entity.isLanding());
 
 		ears.visible = !entity.isWearingArmor();
+
+		if (!flying) {
+			this.animateWalk(HippogryphAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			this.animate(entity.idleAnimationState, HippogryphAnimation.IDLE, ageInTicks);
+		}
+		else {
+			if (entity.getDeltaMovement().y() > 0) {
+				this.animateWalk(HippogryphAnimation.FLY, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			}
+			else {
+				this.animateWalk(HippogryphAnimation.GLIDE, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			}
+		}
 
 		this.head.xRot = headPitch * 0.017453292F;
 		this.head.yRot = netHeadYaw * 0.017453292F;
 
 		if (this.young) this.applyStatic(HippogryphAnimation.BABY_TRANSFORM);
-
-		boolean flying = !entity.onGround() && ((entity.isFlying() || entity.isLanding()));
-
-		if (entity.onGround()) {
-//			this.animateWalk(HippogryphAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
-		}
-		else if (flying) {
-			//this.root.xRot = headPitch * ((float)Math.PI / 180F);
-
-			this.animateWalk(HippogryphAnimation.FLY, ageInTicks * 0.75F, 0.3F, 3.0F, 100.0F);
-		}
 	}
 
 	@Override

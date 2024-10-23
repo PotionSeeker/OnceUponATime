@@ -18,6 +18,5 @@ public class ModItems {
     public static final RegistryObject<Item> IRON_HIPPOGRYPH_ARMOR = ITEMS.register("iron_hippogryph_armor", () -> new HippogryphArmorItem(5, "iron", new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> GOLDEN_HIPPOGRYPH_ARMOR = ITEMS.register("golden_hippogryph_armor", () -> new HippogryphArmorItem(7, "gold", new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> DIAMOND_HIPPOGRYPH_ARMOR = ITEMS.register("diamond_hippogryph_armor", () -> new HippogryphArmorItem(11, "diamond", new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> LEATHER_HIPPOGRYPH_ARMOR = ITEMS.register("leather_hippogryph_armor", () -> new DyeableHippogryphArmorItem(3, "leather", new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> HIPPOGRYPH_EGG = ITEMS.register("hippogryph_egg", () -> new BlockItem(ModBlocks.HIPPOGRYPH_EGG.get(), new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<Item> LEATHER_HIPPOGRYPH_ARMOR = ITEMS.register("leather_hippogryph_armor", () -> new DyeableHippogryphArmorItem(3, "leather", new Item.Properties().stacksTo(16)));
 }

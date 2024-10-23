@@ -50,7 +50,11 @@ public class Hippogryph extends AbstractHorse {
     private static final EntityDataAccessor<Boolean> HAS_ARMOR = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> FLIGHT_TICKS = SynchedEntityData.defineId(Hippogryph.class, EntityDataSerializers.INT);
     private static final UUID ARMOR_MODIFIER_UUID = UUID.randomUUID();
-    public final int MAX_FLIGHT_TICKS = 1200;
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState glideAnimationState = new AnimationState();
+    public final AnimationState flyAnimationState = new AnimationState();
+    public final int MAX_FLIGHT_TICKS =  1200;
+    private int idleAnimationTimeout = 0;
     public HippogryphWanderGoal wanderGoal;
     public HippogryphLandOnGroundGoal landGoal;
     public float prevTilt;
@@ -74,6 +78,20 @@ public class Hippogryph extends AbstractHorse {
         this.goalSelector.addGoal(6, wanderGoal);
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+    }
+
+    private void setupAnimationStates() {
+        boolean flying = !onGround() && (isFlying() || isLanding());
+
+        this.flyAnimationState.animateWhen(flying, this.tickCount);
+        this.glideAnimationState.animateWhen(flying && yya < 0.0F, this.tickCount);
+
+        if (this.idleAnimationTimeout == 0) {
+            this.idleAnimationTimeout = 80;
+            this.idleAnimationState.start(this.tickCount);
+        } else {
+            --this.idleAnimationTimeout;
+        }
     }
 
     public static AttributeSupplier.Builder createHippogryphAttributes() {
@@ -303,11 +321,8 @@ public class Hippogryph extends AbstractHorse {
     public void tick() {
         super.tick();
 
-        if (isVehicle() && getControllingPassenger() != null && isFlying() || isLanding()) {
-            float added = (float) position().y() * (float) getDeltaMovement().y();
-            float xTilt = Mth.clamp(added, -15.0F, 20.0F);
-
-            setXRot(-Mth.lerp(getXRot(), xTilt, xTilt));
+        if (this.level().isClientSide()) {
+            this.setupAnimationStates();
         }
 
         if (wanderGoal != null && !isVehicle() && level().getBlockState(blockPosition().below(1)).isAir() && !isFlying() && !isLanding()) {

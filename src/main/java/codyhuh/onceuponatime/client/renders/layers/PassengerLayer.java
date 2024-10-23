@@ -9,6 +9,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -35,8 +36,17 @@ public class PassengerLayer<T extends Hippogryph, M extends HippogryphModel<T>> 
                 OnceUponATime.PROXY.releaseRenderingEntity(passenger.getUUID());
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.ZP.rotationDegrees(entity.tilt * 0.25F));
-                getParentModel().root().translateAndRotate(poseStack);
-                poseStack.translate(0.0D, passenger.getBbHeight() - 1.5D, 0.0D);
+
+                boolean flying = !entity.onGround() && (entity.isFlying() || entity.isLanding());
+                ModelPart part = getParentModel().root();
+                double y = passenger.getBbHeight() - 1.5D;
+
+                if (!flying) {
+                    part = getParentModel().body;
+                    y = passenger.getBbHeight() - 1.125D;
+                }
+                poseStack.translate(0.0D, y, 0.0D);
+                part.translateAndRotate(poseStack);
                 poseStack.mulPose(Axis.XN.rotationDegrees(180F));
                 poseStack.mulPose(Axis.YN.rotationDegrees(360F - bodyYaw));
                 renderPassenger(passenger, 0, partialTicks, poseStack, pBuffer, pPackedLight);
