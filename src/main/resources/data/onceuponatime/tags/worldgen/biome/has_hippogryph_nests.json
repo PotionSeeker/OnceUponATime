@@ -1,8 +1,6 @@
 {
   "values": [
-    "minecraft:snowy_slopes",
     "minecraft:jagged_peaks",
-    "minecraft:frozen_peaks",
     "minecraft:stony_peaks"
   ]
 }
