@@ -30,16 +30,12 @@ public class UnicornHornPowerLayer<T extends Unicorn, M extends UnicornModel<T>>
 
             RenderSystem.setShaderTexture(0, POWER_LOCATION);
             RenderSystem.setShaderTexture(3, new ResourceLocation(OnceUponATime.MOD_ID, "textures/entity/unicorn/unicorn_mask.png"));
-            VertexConsumer vertexconsumer = pBuffer.getBuffer(ModRenderTypes.unicornHorn(POWER_LOCATION, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F));
+            VertexConsumer vertexconsumer = pBuffer.getBuffer(ModRenderTypes.unicornHorn(POWER_LOCATION, 0.0F, f * 0.01F % 1.0F));
 
             this.getParentModel().copyPropertiesTo(model);
             model.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks);
             model.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
             model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.5F, 0.5F, 0.5F, 1.0F);
         }
-    }
-
-    protected float xOffset(float pTickCount) {
-        return pTickCount * -0.00001F;
     }
 }
