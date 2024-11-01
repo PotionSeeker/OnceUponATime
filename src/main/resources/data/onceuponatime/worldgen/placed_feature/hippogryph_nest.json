@@ -9,48 +9,31 @@
       "type": "minecraft:in_square"
     },
     {
-      "type": "minecraft:biome"
-    },
-    {
       "type": "minecraft:heightmap",
       "heightmap": "MOTION_BLOCKING"
     },
     {
       "type": "minecraft:height_range",
       "height": {
-        "type": "minecraft:uniform",
+        "type": "minecraft:biased_to_bottom",
         "min_inclusive": {
-          "absolute": 100
+          "below_top": 150
         },
         "max_inclusive": {
-          "absolute": 300
+          "below_top": 100
         }
       }
     },
     {
       "type": "minecraft:block_predicate_filter",
       "predicate": {
-        "type": "minecraft:all_of",
-        "predicates": [
-          {
-            "type": "minecraft:has_sturdy_face",
-            "offset": [
-              0,
-              0,
-              0
-            ],
-            "direction": "down"
-          },
-          {
-            "type": "minecraft:matching_blocks",
-            "offset": [
-              0,
-              0,
-              0
-            ],
-            "blocks": "minecraft:snow_block"
-          }
-        ]
+        "type": "minecraft:matching_block_tag",
+        "offset": [
+          0,
+          -1,
+          0
+        ],
+        "tag": "minecraft:base_stone_overworld"
       }
     }
   ]

@@ -1,6 +1,5 @@
 package codyhuh.onceuponatime.common.level.feature;
 
-
 import codyhuh.onceuponatime.common.level.feature.config.StructureFeatureConfiguration;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -37,7 +36,7 @@ public class HippogryphNestFeature extends Feature<StructureFeatureConfiguration
         StructureTemplate template = structuretemplatemanager.getOrCreate(structureLocation);
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation).setRandom(rand);
         Vec3i rotatedSize = template.getSize(rotation);
-        BlockPos blockpos1 = structurePos.offset(-Math.round(rotatedSize.getX() / 2F - 1), -2, (int) -Math.ceil(rotatedSize.getZ() / 2F - 1));
+        BlockPos blockpos1 = structurePos.offset(-Math.round(rotatedSize.getX() / 2F - 1), 0, (int) -Math.ceil(rotatedSize.getZ() / 2F - 1));
         BlockPos blockpos2 = template.getZeroPositionWithTransform(blockpos1, Mirror.NONE, rotation);
         template.placeInWorld(level, blockpos2, blockpos2, settings, rand, 4);
         return true;
