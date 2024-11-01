@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Collections;
 
+// todo - fix wings being slightly offset when standing still
 public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hippogryph"), "main");
 	private final ModelPart root;

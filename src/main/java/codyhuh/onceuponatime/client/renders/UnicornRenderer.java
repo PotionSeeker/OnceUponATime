@@ -22,7 +22,7 @@ public class UnicornRenderer extends MobRenderer<Unicorn, UnicornModel<Unicorn>>
 
     public UnicornRenderer(EntityRendererProvider.Context cntxt) {
         super(cntxt, new UnicornModel<>(cntxt.bakeLayer(UnicornModel.LAYER_LOCATION)), 0.55F);
-        this.addLayer(new UnicornHornPowerLayer(this, cntxt.getModelSet()));
+        this.addLayer(new UnicornHornPowerLayer<>(this, cntxt.getModelSet()));
     }
 
     public ResourceLocation getTextureLocation(Unicorn entity) {
