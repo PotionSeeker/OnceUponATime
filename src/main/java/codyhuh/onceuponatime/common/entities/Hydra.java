@@ -37,7 +37,7 @@ public class Hydra extends PathfinderMob {
         super(pEntityType, pLevel);
         this.headLeft = new HydraPart(this, "headLeft", 0.4F, 1.5F);
         this.headMiddle = new HydraPart(this, "headMiddle", 0.4F, 1.5F);
-        this.headRight = new HydraPart(this, "headRight", 0.4F, 2.5F);
+        this.headRight = new HydraPart(this, "headRight", 0.4F, 1.5F);
         this.heads = new HydraPart[]{this.headLeft, this.headMiddle, this.headRight};
     }
 
