@@ -2,6 +2,7 @@ package codyhuh.onceuponatime.common;
 
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
+import codyhuh.onceuponatime.common.entities.Hydra;
 import codyhuh.onceuponatime.common.entities.Unicorn;
 import codyhuh.onceuponatime.registry.ModEntities;
 import codyhuh.onceuponatime.registry.ModItems;
@@ -21,5 +22,6 @@ public class CommonEvents {
     public static void createAttributes(EntityAttributeCreationEvent e) {
         e.put(ModEntities.HIPPOGRYPH.get(), Hippogryph.createHippogryphAttributes().build());
         e.put(ModEntities.UNICORN.get(), Unicorn.createUnicornAttributes().build());
+        e.put(ModEntities.HYDRA.get(), Hydra.createHydraAttributes().build());
     }
 }

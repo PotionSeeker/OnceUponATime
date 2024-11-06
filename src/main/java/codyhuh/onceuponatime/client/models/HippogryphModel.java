@@ -68,14 +68,14 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 		PartDefinition r_leg_1 = root.addOrReplaceChild("r_leg_1", CubeListBuilder.create().texOffs(16, 61).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 13.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
 				.texOffs(28, 36).addBox(-3.0F, 13.0F, -6.0F, 5.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.5F, 6.0F, -4.3776F));
 
-		PartDefinition l_wing_1 = root.addOrReplaceChild("l_wing_1", CubeListBuilder.create().texOffs(62, 61).addBox(-1.0F, -10.0F, -1.6224F, 2.0F, 10.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(4.5F, -5.0F, 0.3724F));
+		PartDefinition l_wing_1 = root.addOrReplaceChild("l_wing_1", CubeListBuilder.create().texOffs(62, 61).addBox(-1.0F, -10.0F, -1.6224F, 2.0F, 10.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(4.8F, -5.0F, 0.3724F));
 
 		PartDefinition l_wing_1_feathers = l_wing_1.addOrReplaceChild("l_wing_1_feathers", CubeListBuilder.create().texOffs(58, 36).addBox(4.0F, -34.0F, 0.25F, 0.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.975F, 24.0F, 1.1276F));
 
 		PartDefinition l_wing_2 = l_wing_1.addOrReplaceChild("l_wing_2", CubeListBuilder.create().texOffs(0, 79).addBox(-1.0F, -12.0F, 0.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(62, 0).addBox(0.0F, -22.0F, 0.0F, 0.0F, 22.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -10.0F, -1.6224F));
 
-		PartDefinition r_wing_1 = root.addOrReplaceChild("r_wing_1", CubeListBuilder.create().texOffs(62, 61).mirror().addBox(-1.0F, -10.0F, -1.6224F, 2.0F, 10.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-4.5F, -5.0F, 0.3724F));
+		PartDefinition r_wing_1 = root.addOrReplaceChild("r_wing_1", CubeListBuilder.create().texOffs(62, 61).mirror().addBox(-1.0F, -10.0F, -1.6224F, 2.0F, 10.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-4.8F, -5.0F, 0.3724F));
 
 		PartDefinition r_wing_1_feathers = r_wing_1.addOrReplaceChild("r_wing_1_feathers", CubeListBuilder.create().texOffs(58, 36).mirror().addBox(0.0F, -10.0F, 1.3776F, 0.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-0.025F, 0.0F, 0.0F));
 

@@ -2,6 +2,7 @@ package codyhuh.onceuponatime.registry;
 
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
+import codyhuh.onceuponatime.common.entities.Hydra;
 import codyhuh.onceuponatime.common.entities.Unicorn;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -14,4 +15,5 @@ public class ModEntities {
 
     public static final RegistryObject<EntityType<Hippogryph>> HIPPOGRYPH = ENTITIES.register("hippogryph", () -> EntityType.Builder.of(Hippogryph::new, MobCategory.CREATURE).sized(1.25F, 1.6F).build("hippogryph"));
     public static final RegistryObject<EntityType<Unicorn>> UNICORN = ENTITIES.register("unicorn", () -> EntityType.Builder.of(Unicorn::new, MobCategory.CREATURE).sized(0.75F, 1.25F).build("unicorn"));
+    public static final RegistryObject<EntityType<Hydra>> HYDRA = ENTITIES.register("hydra", () -> EntityType.Builder.of(Hydra::new, MobCategory.CREATURE).sized(1.75F, 1.25F).build("hyra"));
 }

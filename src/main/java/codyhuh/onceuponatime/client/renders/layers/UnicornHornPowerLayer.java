@@ -20,7 +20,7 @@ public class UnicornHornPowerLayer<T extends Unicorn, M extends UnicornModel<T>>
 
     public UnicornHornPowerLayer(RenderLayerParent<T, M> pRenderer, EntityModelSet pModelSet) {
         super(pRenderer);
-        this.model = new UnicornModel<>(pModelSet.bakeLayer(UnicornModel.POWER_LAYER_LOCATION));
+        this.model = new UnicornModel<>(pModelSet.bakeLayer(UnicornModel.LAYER_LOCATION));
     }
 
     @Override

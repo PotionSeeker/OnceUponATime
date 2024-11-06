@@ -2,8 +2,10 @@ package codyhuh.onceuponatime.client;
 
 import codyhuh.onceuponatime.OnceUponATime;
 import codyhuh.onceuponatime.client.models.HippogryphModel;
+import codyhuh.onceuponatime.client.models.HydraModel;
 import codyhuh.onceuponatime.client.models.UnicornModel;
 import codyhuh.onceuponatime.client.renders.HippogryphRenderer;
+import codyhuh.onceuponatime.client.renders.HydraRenderer;
 import codyhuh.onceuponatime.client.renders.UnicornRenderer;
 import codyhuh.onceuponatime.common.items.DyeableHippogryphArmorItem;
 import codyhuh.onceuponatime.registry.ModEntities;
@@ -34,13 +36,14 @@ public class ClientEvents {
     public static void registerRenders(EntityRenderersEvent.RegisterRenderers e) {
         e.registerEntityRenderer(ModEntities.HIPPOGRYPH.get(), HippogryphRenderer::new);
         e.registerEntityRenderer(ModEntities.UNICORN.get(), UnicornRenderer::new);
+        e.registerEntityRenderer(ModEntities.HYDRA.get(), HydraRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions e) {
         e.registerLayerDefinition(HippogryphModel.LAYER_LOCATION, HippogryphModel::createBodyLayer);
         e.registerLayerDefinition(UnicornModel.LAYER_LOCATION, UnicornModel::createBodyLayer);
-        e.registerLayerDefinition(UnicornModel.POWER_LAYER_LOCATION, UnicornModel::createBodyLayer);
+        e.registerLayerDefinition(HydraModel.LAYER_LOCATION, HydraModel::createBodyLayer);
     }
 
     @SubscribeEvent

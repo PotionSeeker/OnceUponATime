@@ -17,7 +17,6 @@ import java.util.Collections;
 
 public class UnicornModel<T extends Unicorn> extends AgeableListModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "unicorn"), "main");
-	public static final ModelLayerLocation POWER_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "unicorn"), "armor");
 	private final ModelPart horn;
 	private final ModelPart root;
 	private final ModelPart back_body;
