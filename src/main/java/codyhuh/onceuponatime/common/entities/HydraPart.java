@@ -59,7 +59,7 @@ public class HydraPart extends PartEntity<Hydra> {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float damage) {
-        return true;
+        return parentMob.damagePart(this, source, damage);
     }
 
     @Override

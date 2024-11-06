@@ -178,6 +178,11 @@ public class HydraModel<T extends Hydra> extends HierarchicalModel<T> {
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 
+			this.neck_middle2.visible = !entity.isLeftHeadKilled();
+			this.neck_middle3.visible = !entity.isMiddleHeadKilled();
+			this.neck_middle.visible = !entity.isRightHeadKilled();
+
+
 		this.animateWalk(HydraAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
 		this.animate(entity.idleAnimationState, HydraIdleAnimation.IDLE, ageInTicks);
 

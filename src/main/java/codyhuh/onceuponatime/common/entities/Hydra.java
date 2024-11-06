@@ -1,6 +1,10 @@
 package codyhuh.onceuponatime.common.entities;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -16,18 +20,24 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 
 public class Hydra extends PathfinderMob {
+    private static final EntityDataAccessor<Boolean> LEFT_KILLED = SynchedEntityData.defineId(Hydra.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> MIDDLE_KILLED = SynchedEntityData.defineId(Hydra.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> RIGHT_KILLED = SynchedEntityData.defineId(Hydra.class, EntityDataSerializers.BOOLEAN);
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
     private final HydraPart[] heads;
     private final HydraPart headLeft;
     private final HydraPart headMiddle;
     private final HydraPart headRight;
+    public float leftHealth = 30;
+    public float middleHealth = 30;
+    public float rightHealth = 30;
 
     public Hydra(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.headLeft = new HydraPart(this, "head", 0.4F, 1.5F);
-        this.headMiddle = new HydraPart(this, "head", 0.4F, 1.5F);
-        this.headRight = new HydraPart(this, "head", 0.4F, 1.5F);
+        this.headLeft = new HydraPart(this, "headLeft", 0.4F, 1.5F);
+        this.headMiddle = new HydraPart(this, "headMiddle", 0.4F, 1.5F);
+        this.headRight = new HydraPart(this, "headRight", 0.4F, 2.5F);
         this.heads = new HydraPart[]{this.headLeft, this.headMiddle, this.headRight};
     }
 
@@ -41,6 +51,30 @@ public class Hydra extends PathfinderMob {
 
     public static AttributeSupplier.Builder createHydraAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 60.0D).add(Attributes.MOVEMENT_SPEED, 0.25F).add(Attributes.KNOCKBACK_RESISTANCE, 0.5F);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(LEFT_KILLED, false);
+        this.entityData.define(MIDDLE_KILLED, false);
+        this.entityData.define(RIGHT_KILLED, false);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.setLeftHeadKilled(pCompound.getBoolean("LeftHeadKilled"));
+        this.setMiddleHeadKilled(pCompound.getBoolean("MiddleHeadKilled"));
+        this.setRightHeadKilled(pCompound.getBoolean("RightHeadKilled"));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putBoolean("LeftHeadKilled", this.isLeftHeadKilled());
+        pCompound.putBoolean("MiddleHeadKilled", this.isMiddleHeadKilled());
+        pCompound.putBoolean("RightHeadKilled", this.isRightHeadKilled());
     }
 
     @Override
@@ -90,9 +124,109 @@ public class Hydra extends PathfinderMob {
         movePart(this.headRight, headRight.x, headRight.y, headRight.z);
     }
 
+    public float getLeftHeadHealth() {
+        return this.leftHealth;
+    }
+
+    private void setLeftHeadHealth(float health) {
+        this.leftHealth = health;
+    }
+
+    public float getMiddleHeadHealth() {
+        return this.middleHealth;
+    }
+
+    private void setMiddleHeadHealth(float health) {
+        this.middleHealth = health;
+    }
+
+    public float getRightHeadHealth() {
+        return this.rightHealth;
+    }
+
+    private void setRightHeadHealth(float health) {
+        this.rightHealth = health;
+    }
+
+    public boolean isLeftHeadKilled() {
+        return this.entityData.get(LEFT_KILLED);
+    }
+
+    private void setLeftHeadKilled(boolean killed) {
+        this.entityData.set(LEFT_KILLED, killed);
+    }
+
+    public boolean isMiddleHeadKilled() {
+        return this.entityData.get(MIDDLE_KILLED);
+    }
+
+    private void setMiddleHeadKilled(boolean killed) {
+        this.entityData.set(MIDDLE_KILLED, killed);
+    }
+
+    public boolean isRightHeadKilled() {
+        return this.entityData.get(RIGHT_KILLED);
+    }
+
+    private void setRightHeadKilled(boolean killed) {
+        this.entityData.set(RIGHT_KILLED, killed);
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (!isInvulnerableTo(pSource)) {
+            if (pSource.equals(damageSources().genericKill())) {
+                return super.hurt(pSource, pAmount);
+            }
+            else if (!isRightHeadKilled() || !isLeftHeadKilled() || !isMiddleHeadKilled()) {
+                return false;
+            }
+            else {
+                return super.hurt(pSource, pAmount);
+            }
+        }
+        else {
+            return !level().isClientSide();
+        }
+    }
+
+    public boolean damagePart(HydraPart part, DamageSource source, float damage) {
+        if (part == this.headRight) {
+            if (this.getRightHeadHealth() - damage <= 0) {
+                this.setRightHeadHealth(0);
+                this.setRightHeadKilled(true);
+                //super.hurt(source, 0.0F);
+            } else {
+                this.setRightHeadHealth(this.getRightHeadHealth() - damage);
+                return super.hurt(source, damage);
+            }
+        }
+        else if (part == this.headMiddle) {
+            if (this.getMiddleHeadHealth() - damage <= 0) {
+                this.setMiddleHeadHealth(0);
+                this.setMiddleHeadKilled(true);
+                //super.hurt(source, 0.0F);
+            } else {
+                this.setMiddleHeadHealth(this.getMiddleHeadHealth() - damage);
+                return super.hurt(source, damage);
+            }
+        }
+        else if (part == this.headLeft) {
+            if (this.getLeftHeadHealth() - damage <= 0) {
+                this.setLeftHeadHealth(0);
+                this.setLeftHeadKilled(true);
+                //super.hurt(source, 0.0F);
+            } else {
+                this.setLeftHeadHealth(this.getLeftHeadHealth() - damage);
+                return super.hurt(source, damage);
+            }
+        }
+        return false;
+    }
+
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pSize) {
-        return pSize.height;
+        return pSize.height - 0.1F;
     }
 
     @Override
