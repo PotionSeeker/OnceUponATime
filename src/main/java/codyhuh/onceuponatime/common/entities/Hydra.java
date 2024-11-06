@@ -39,6 +39,7 @@ public class Hydra extends PathfinderMob {
         this.headMiddle = new HydraPart(this, "headMiddle", 0.4F, 1.5F);
         this.headRight = new HydraPart(this, "headRight", 0.4F, 1.5F);
         this.heads = new HydraPart[]{this.headLeft, this.headMiddle, this.headRight};
+        this.setId(ENTITY_COUNTER.getAndAdd(this.heads.length + 1) + 1);
     }
 
     @Override
@@ -78,12 +79,19 @@ public class Hydra extends PathfinderMob {
     }
 
     @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket p_149572_) {
-        super.recreateFromPacket(p_149572_);
+    public void setId(int pId) {
+        super.setId(pId);
+        for (int i = 0; i < this.heads.length; i++) // Forge: Fix MC-158205: Set part ids to successors of parent mob id
+            this.heads[i].setId(pId + i + 1);
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
         HydraPart[] parts = this.getHeads();
 
         for(int i = 0; i < parts.length; ++i) {
-            parts[i].setId(i + p_149572_.getId());
+            parts[i].setId(i + packet.getId());
         }
     }
 
@@ -191,7 +199,7 @@ public class Hydra extends PathfinderMob {
     }
 
     public boolean damagePart(HydraPart part, DamageSource source, float damage) {
-        if (part == this.headRight) {
+        if (part.equals(this.headRight)) {
             if (this.getRightHeadHealth() - damage <= 0) {
                 this.setRightHeadHealth(0);
                 this.setRightHeadKilled(true);
@@ -201,7 +209,7 @@ public class Hydra extends PathfinderMob {
                 return super.hurt(source, damage);
             }
         }
-        else if (part == this.headMiddle) {
+        if (part.equals(this.headMiddle)) {
             if (this.getMiddleHeadHealth() - damage <= 0) {
                 this.setMiddleHeadHealth(0);
                 this.setMiddleHeadKilled(true);
@@ -211,7 +219,7 @@ public class Hydra extends PathfinderMob {
                 return super.hurt(source, damage);
             }
         }
-        else if (part == this.headLeft) {
+        if (part.equals(this.headLeft)) {
             if (this.getLeftHeadHealth() - damage <= 0) {
                 this.setLeftHeadHealth(0);
                 this.setLeftHeadKilled(true);
