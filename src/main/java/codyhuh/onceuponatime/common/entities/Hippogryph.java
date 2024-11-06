@@ -74,8 +74,8 @@ public class Hippogryph extends AbstractHorse {
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.25D, Ingredient.of(Items.GOLDEN_CARROT, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE), false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, landGoal);
-        this.goalSelector.addGoal(6, wanderGoal);
+        //this.goalSelector.addGoal(5, landGoal);
+        //this.goalSelector.addGoal(6, wanderGoal);
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
@@ -83,19 +83,12 @@ public class Hippogryph extends AbstractHorse {
     private void setupAnimationStates() {
         boolean flying = !onGround() && (isFlying() || isLanding());
 
-        this.flyAnimationState.animateWhen(flying, this.tickCount);
-        this.glideAnimationState.animateWhen(flying && yya < 0.0F, this.tickCount);
-
-        if (walkAnimation.speed() >  0.005F) {
-            idleAnimationState.stop();
-        }
-        else {
-            idleAnimationState.startIfStopped(this.tickCount);
-        }
+        this.flyAnimationState.animateWhen(flying && yya > 0.0F, this.tickCount);
+        this.glideAnimationState.animateWhen(flying && yya <= 0.0F, this.tickCount);
 
         if (this.idleAnimationTimeout == 0) {
             this.idleAnimationTimeout = 80;
-            this.idleAnimationState.start(this.tickCount);
+            this.idleAnimationState.startIfStopped(this.tickCount);
         } else {
             --this.idleAnimationTimeout;
         }
