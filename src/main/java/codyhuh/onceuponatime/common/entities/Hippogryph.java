@@ -86,6 +86,13 @@ public class Hippogryph extends AbstractHorse {
         this.flyAnimationState.animateWhen(flying, this.tickCount);
         this.glideAnimationState.animateWhen(flying && yya < 0.0F, this.tickCount);
 
+        if (walkAnimation.speed() >  0.005F) {
+            idleAnimationState.stop();
+        }
+        else {
+            idleAnimationState.startIfStopped(this.tickCount);
+        }
+
         if (this.idleAnimationTimeout == 0) {
             this.idleAnimationTimeout = 80;
             this.idleAnimationState.start(this.tickCount);

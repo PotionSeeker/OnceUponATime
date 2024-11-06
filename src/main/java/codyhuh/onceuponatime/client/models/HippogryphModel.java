@@ -18,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Collections;
 
-// todo - fix wings being slightly offset when standing still
 public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hippogryph"), "main");
 	private final ModelPart root;
@@ -79,8 +78,8 @@ public class HippogryphModel<T extends Hippogryph> extends AgeableHierarchicalMo
 
 		PartDefinition r_wing_1_feathers = r_wing_1.addOrReplaceChild("r_wing_1_feathers", CubeListBuilder.create().texOffs(58, 36).mirror().addBox(0.0F, -10.0F, 1.3776F, 0.0F, 10.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-0.025F, 0.0F, 0.0F));
 
-		PartDefinition r_wing_2 = r_wing_1.addOrReplaceChild("r_wing_2", CubeListBuilder.create().texOffs(62, 0).mirror().addBox(0.0F, -22.0F, 0.25F, 0.0F, 22.0F, 14.0F, new CubeDeformation(0.0F)).mirror(false)
-				.texOffs(0, 79).mirror().addBox(-1.0F, -12.0F, 0.25F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, -10.0F, -1.8724F));
+		PartDefinition r_wing_2 = r_wing_1.addOrReplaceChild("r_wing_2", CubeListBuilder.create().texOffs(62, 0).mirror().addBox(0.0F, -22.0F, 0.0F, 0.0F, 22.0F, 14.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(0, 79).mirror().addBox(-1.0F, -12.0F, 0.0F, 2.0F, 12.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, -10.0F, -1.6224F));
 
 		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 36).addBox(-3.5F, -14.5343F, -3.75F, 7.0F, 18.0F, 7.0F, new CubeDeformation(0.0F))
 				.texOffs(100, 72).addBox(-3.5F, -14.5343F, -3.75F, 7.0F, 18.0F, 7.0F, new CubeDeformation(0.1F))
