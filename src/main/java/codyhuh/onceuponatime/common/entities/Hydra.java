@@ -25,7 +25,8 @@ public class Hydra extends PathfinderMob {
     private static final EntityDataAccessor<Boolean> RIGHT_KILLED = SynchedEntityData.defineId(Hydra.class, EntityDataSerializers.BOOLEAN);
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
-    private final HydraPart[] heads;
+    private final HydraPart[] subEntities;
+    private final HydraPart body;
     private final HydraPart headLeft;
     private final HydraPart headMiddle;
     private final HydraPart headRight;
@@ -35,11 +36,12 @@ public class Hydra extends PathfinderMob {
 
     public Hydra(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.body = new HydraPart(this, "body", 1.15F, 0.95F);
         this.headLeft = new HydraPart(this, "headLeft", 0.4F, 1.5F);
         this.headMiddle = new HydraPart(this, "headMiddle", 0.4F, 1.5F);
         this.headRight = new HydraPart(this, "headRight", 0.4F, 1.5F);
-        this.heads = new HydraPart[]{this.headLeft, this.headMiddle, this.headRight};
-        this.setId(ENTITY_COUNTER.getAndAdd(this.heads.length + 1) + 1);
+        this.subEntities = new HydraPart[]{this.headLeft, this.headMiddle, this.headRight};
+        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
     }
 
     @Override
@@ -81,14 +83,14 @@ public class Hydra extends PathfinderMob {
     @Override
     public void setId(int pId) {
         super.setId(pId);
-        for (int i = 0; i < this.heads.length; i++) // Forge: Fix MC-158205: Set part ids to successors of parent mob id
-            this.heads[i].setId(pId + i + 1);
+        for (int i = 0; i < this.subEntities.length; i++) // Forge: Fix MC-158205: Set part ids to successors of parent mob id
+            this.subEntities[i].setId(pId + i + 1);
     }
 
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
-        HydraPart[] parts = this.getHeads();
+        HydraPart[] parts = this.getSubEntities();
 
         for(int i = 0; i < parts.length; ++i) {
             parts[i].setId(i + packet.getId());
@@ -102,11 +104,11 @@ public class Hydra extends PathfinderMob {
 
     @Override
     public PartEntity<?>[] getParts() {
-        return this.heads;
+        return this.subEntities;
     }
 
-    public HydraPart[] getHeads() {
-        return this.heads;
+    public HydraPart[] getSubEntities() {
+        return this.subEntities;
     }
 
     protected void movePart(HydraPart part, double dX, double dY, double dZ) {
@@ -123,10 +125,12 @@ public class Hydra extends PathfinderMob {
     }
 
     protected void updateParts() {
+        Vec3 body = Vec3.ZERO;
         Vec3 headLeft = new Vec3(0.6D, 0.4D, 0.8D).yRot(-yBodyRot * ((float) Math.PI / 180f));
         Vec3 headMiddle = new Vec3(0.0D, 0.4D, 0.8D).yRot(-yBodyRot * ((float) Math.PI / 180f));
         Vec3 headRight = new Vec3(-0.6D, 0.4D, 0.8D).yRot(-yBodyRot * ((float) Math.PI / 180f));
 
+        movePart(this.body, body.x, body.y, body.z);
         movePart(this.headLeft, headLeft.x, headLeft.y, headLeft.z);
         movePart(this.headMiddle, headMiddle.x, headMiddle.y, headMiddle.z);
         movePart(this.headRight, headRight.x, headRight.y, headRight.z);
@@ -186,19 +190,15 @@ public class Hydra extends PathfinderMob {
             if (pSource.equals(damageSources().genericKill())) {
                 return super.hurt(pSource, pAmount);
             }
-            else if (!isRightHeadKilled() || !isLeftHeadKilled() || !isMiddleHeadKilled()) {
-                return false;
-            }
-            else {
+            else if (isRightHeadKilled() && isLeftHeadKilled() && isMiddleHeadKilled()) {
                 return super.hurt(pSource, pAmount);
             }
         }
-        else {
-            return !level().isClientSide();
-        }
+        return !level().isClientSide();
     }
 
     public boolean damagePart(HydraPart part, DamageSource source, float damage) {
+        if (!level().isClientSide()) System.out.println(part.name);
         if (part.equals(this.headRight)) {
             if (this.getRightHeadHealth() - damage <= 0) {
                 this.setRightHeadHealth(0);
@@ -206,7 +206,7 @@ public class Hydra extends PathfinderMob {
                 //super.hurt(source, 0.0F);
             } else {
                 this.setRightHeadHealth(this.getRightHeadHealth() - damage);
-                return super.hurt(source, damage);
+                return super.hurt(source, 0.0F);
             }
         }
         if (part.equals(this.headMiddle)) {
@@ -216,7 +216,7 @@ public class Hydra extends PathfinderMob {
                 //super.hurt(source, 0.0F);
             } else {
                 this.setMiddleHeadHealth(this.getMiddleHeadHealth() - damage);
-                return super.hurt(source, damage);
+                return super.hurt(source, 0.0F);
             }
         }
         if (part.equals(this.headLeft)) {
@@ -226,7 +226,7 @@ public class Hydra extends PathfinderMob {
                 //super.hurt(source, 0.0F);
             } else {
                 this.setLeftHeadHealth(this.getLeftHeadHealth() - damage);
-                return super.hurt(source, damage);
+                return super.hurt(source, 0.0F);
             }
         }
         return false;
@@ -238,14 +238,18 @@ public class Hydra extends PathfinderMob {
     }
 
     @Override
+    public void aiStep() {
+        super.aiStep();
+        updateParts();
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
         if (this.level().isClientSide()) {
             this.setupAnimationStates();
         }
-
-        updateParts();
     }
 
     private void setupAnimationStates() {
