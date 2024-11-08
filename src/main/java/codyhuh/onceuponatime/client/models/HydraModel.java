@@ -1,7 +1,6 @@
 package codyhuh.onceuponatime.client.models;
 
 import codyhuh.onceuponatime.OnceUponATime;
-import codyhuh.onceuponatime.client.animations.HippogryphAnimation;
 import codyhuh.onceuponatime.client.animations.HydraAnimation;
 import codyhuh.onceuponatime.client.animations.HydraIdleAnimation;
 import codyhuh.onceuponatime.common.entities.Hydra;
