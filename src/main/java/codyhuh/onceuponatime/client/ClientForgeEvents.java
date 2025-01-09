@@ -1,6 +1,7 @@
 package codyhuh.onceuponatime.client;
 
 import codyhuh.onceuponatime.OnceUponATime;
+import codyhuh.onceuponatime.client.models.HippogryphModel;
 import codyhuh.onceuponatime.common.entities.Hippogryph;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -24,7 +25,7 @@ public class ClientForgeEvents {
         var player = mc.player;
         float factor;
 
-        if (player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
+        if (!mc.isPaused() && player != null && player.isPassenger() && player.getVehicle() instanceof Hippogryph hippogryph) {
             Camera camera = e.getCamera();
 
             if (mc.options.getCameraType().isFirstPerson()) {
@@ -37,6 +38,8 @@ public class ClientForgeEvents {
 
                 camera.move(-0.75D, 0.0D, 0.0D);
             }
+
+            //camera.move(0.0D, Mth.lerp(e.getPartialTick(), Mth.sin((float) hippogryph.level().nextSubTickCount() * 0.05F), Mth.sin((float) hippogryph.level().nextSubTickCount() * 0.05F)) * 0.1F, 0.0D);
 
             float pitch = e.getPitch() + (float) (Mth.lerp(e.getPartialTick(), hippogryph.xRotO, hippogryph.xRot) * factor);
             float roll = e.getRoll() - (float) (Mth.lerp(e.getPartialTick(), hippogryph.prevTilt, hippogryph.tilt));

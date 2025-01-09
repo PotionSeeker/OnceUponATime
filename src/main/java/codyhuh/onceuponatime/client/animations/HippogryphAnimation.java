@@ -1395,7 +1395,7 @@ public class HippogryphAnimation {
                         new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 3.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(1.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 3.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(2.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 3.0F), AnimationChannel.Interpolations.CATMULLROM)
-                ))
+                ))*/
                 .addAnimation("l_leg_1", new AnimationChannel(AnimationChannel.Targets.ROTATION,
                         new Keyframe(0.0F, KeyframeAnimations.degreeVec(-30.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(0.375F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
@@ -1415,7 +1415,7 @@ public class HippogryphAnimation {
                         new Keyframe(1.5F, KeyframeAnimations.posVec(1.5F, 2.5F, -5.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(1.875F, KeyframeAnimations.posVec(0.5F, 0.0F, -2.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(2.0F, KeyframeAnimations.posVec(0.0F, -1.0F, -2.0F), AnimationChannel.Interpolations.CATMULLROM)
-                ))*/
+                ))
                 .addAnimation("root", new AnimationChannel(AnimationChannel.Targets.POSITION,
                         new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
                         new Keyframe(0.125F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.3536F), AnimationChannel.Interpolations.CATMULLROM),
