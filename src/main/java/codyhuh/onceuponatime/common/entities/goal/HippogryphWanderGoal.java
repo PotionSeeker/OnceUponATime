@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.util.*;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
     public void start() {
         super.start();
 
-        if (!mob.isFlying() && mob.wantsToFly()) {
+        if (!mob.isFlying() && mob.wantsToFly() && mob.onGround()) {
             mob.setDeltaMovement(mob.getDeltaMovement().add(0.0D, 0.25D, 0.0D));
             mob.setFlying(true);
         }
@@ -39,6 +40,12 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
         if (mob.isInWater()) {
             mob.setFlying(true);
             mob.setDeltaMovement(0.0D, 0.25D, 0.0D);
+        }
+
+        BlockPos pos = mob.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, mob.blockPosition());
+        if (!mob.isVehicle() && mob.isFlying() && mob.position().y() > pos.getY() + 32) {
+            stop();
+            mob.landGoal.trigger();
         }
 
         speedModifier = mob.isFlying() && !mob.isControlledByLocalInstance() ? 10.0D : 1.0D;
@@ -82,6 +89,8 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public void stop() {
+        super.stop();
+
         if (wantsToLand()) {
             mob.landGoal.trigger();
         }

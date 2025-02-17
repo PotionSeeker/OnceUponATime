@@ -74,8 +74,8 @@ public class Hippogryph extends AbstractHorse {
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.25D, Ingredient.of(Items.GOLDEN_CARROT, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE), false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.0D));
-        //this.goalSelector.addGoal(5, landGoal);
-        //this.goalSelector.addGoal(6, wanderGoal);
+        this.goalSelector.addGoal(5, landGoal);
+        this.goalSelector.addGoal(6, wanderGoal);
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
