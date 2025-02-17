@@ -23,7 +23,7 @@ public class HippogryphLandOnGroundGoal extends WaterAvoidingRandomStrollGoal {
 
     @Override
     public boolean canUse() {
-        return mob.isFlying() && !mob.wantsToFly() && super.canUse();
+        return (forceTrigger || (mob.isFlying() && !mob.wantsToFly())) && super.canUse();
     }
 
     public void trigger() {
@@ -35,9 +35,8 @@ public class HippogryphLandOnGroundGoal extends WaterAvoidingRandomStrollGoal {
         super.tick();
 
         if (mob.isLanding() && mob.onGround()) {
-            mob.setLanding(false);
+            stop();
         }
-
     }
 
     @Nullable

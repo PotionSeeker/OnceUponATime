@@ -30,6 +30,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.util.GoalUtils;
+import net.minecraft.world.entity.ai.util.LandRandomPos;
+import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +40,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -338,8 +343,29 @@ public class Hippogryph extends AbstractHorse {
             setFlightTicks(getFlightTicks() + 1);
         }
 
-        if (onGround() || getFlightTicks() >= MAX_FLIGHT_TICKS || isUnderWater()) {
-            setFlying(false);
+        // todo- FIX. something here breaks flight...oops
+        if (isFlying() && getFlightTicks() >= MAX_FLIGHT_TICKS) {
+
+            if (wanderGoal != null) {
+                wanderGoal.stop();
+            }
+
+            if (onGround() || isUnderWater()) {
+                setFlying(false);
+            }
+
+            BlockPos pos = RandomPos.generateRandomPosTowardDirection(this, 16, random, level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()));
+
+            Path path = getNavigation().createPath(pos, 1);
+
+            if (path != null && getNavigation().moveTo(path, getSpeed())) {
+
+                if (path.isDone()) {
+                    setFlying(false);
+                    setLanding(false);
+                    System.out.println("!!! PATH COMPLETE !!!");
+                }
+            }
         }
 
         if (onGround() && isLanding()) {
