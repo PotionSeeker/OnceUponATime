@@ -120,29 +120,26 @@ public class Hippogryph extends AbstractHorse {
             getLookControl().setLookAt(position().add(0.0D, 2.0D, 0.0D));
             yRot = Mth.rotateIfNecessary(yHeadRot, yRot, isFlying() ? 5 : 7);
 
-            if (isControlledByLocalInstance()) {
-                if (isFlying()) {
-                    moveX = 0.0F;
-                    moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5F : 0.0F;
-                    moveZ = moveZ > 0.0F ? moveZ : 0.15F;
-                    speed *= 0.5F;
-                } else if (rider.jumping) {
-                    jumpFromGround();
-                    setFlying(true);
-                } else {
-                    speed *= 1.15F;
-                }
-
-                vec3d = new Vec3(moveX, moveY, moveZ);
-                setSpeed(speed);
-            } else {
-                calculateEntityAnimation(true);
-                setDeltaMovement(Vec3.ZERO);
-                if (!level().isClientSide && isFlying())
-                    ((ServerPlayer) rider).connection.aboveGroundVehicleTickCount = 0;
-                return;
+            if (isFlying()) {
+                moveX = 0.0F;
+                moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5F : 0.0F;
+                moveZ = moveZ > 0.0F ? moveZ : 0.15F;
+                speed *= 0.5F;
             }
+            else if (rider.jumping) {
+                jumpFromGround();
+                setFlying(true);
+            } else {
+                speed *= 1.15F;
+            }
+
+            vec3d = new Vec3(moveX, moveY, moveZ);
+            setSpeed(speed);
+            calculateEntityAnimation(true);
+            if (!level().isClientSide && isFlying())
+                ((ServerPlayer) rider).connection.aboveGroundVehicleTickCount = 0;
         }
+        // todo- FIX. something here breaks flight...oops. causes rubber banding when flight ticks > 1200 && isFlying - maybe not actually happening?
         if (flying && !isNoAi()) {
             this.moveRelative(speed, vec3d);
             this.move(MoverType.SELF, getDeltaMovement());
@@ -236,6 +233,7 @@ public class Hippogryph extends AbstractHorse {
     }
 
     public void setLanding(boolean landing) {
+        if (landGoal != null) landGoal.trigger();
         this.entityData.set(IS_LANDING, landing);
     }
 
@@ -314,7 +312,7 @@ public class Hippogryph extends AbstractHorse {
 
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pSize) {
-        return pSize.height;
+        return pSize.height - 0.1F;
     }
 
     @Override
@@ -342,33 +340,19 @@ public class Hippogryph extends AbstractHorse {
             setFlying(false);
         }
 
-        // todo- FIX. something here breaks flight...oops - maybe fixed now?
         if (isFlying() && getFlightTicks() >= MAX_FLIGHT_TICKS) {
-
             if (wanderGoal != null) {
                 wanderGoal.stop();
             }
 
-            if (onGround() || isUnderWater()) {
+            setFlightTicks(getFlightTicks() - 1);
+
+            setFlying(false);
+            setLanding(true);
+
+            /*if (onGround() || isUnderWater()) {
                 setFlying(false);
-            }
-
-            Vec3 randomPos = LandRandomPos.getPosTowards(this, 16, 10, level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPosition()).getCenter());
-            Vec3 pos = level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPosition()).getCenter();
-
-            if (randomPos == null) {
-                randomPos = pos;
-            }
-            Path path = getNavigation().createPath(randomPos.x() + 0.5D, randomPos.y(), randomPos.z() + 0.5D, 1);
-
-            if (path != null && getNavigation().moveTo(path, getSpeed())) {
-
-                if (path.isDone()) {
-                    setFlying(false);
-                    setLanding(false);
-                    System.out.println("!!! PATH COMPLETE !!!");
-                }
-            }
+            }*/
         }
 
         if (onGround() && isLanding()) {
@@ -509,7 +493,6 @@ public class Hippogryph extends AbstractHorse {
             setDeltaMovement(getDeltaMovement().multiply(1.0D, 0.5D, 1.0D));
         }
 
-        System.out.println(fallDistance);
         resetFallDistance();
     }
 

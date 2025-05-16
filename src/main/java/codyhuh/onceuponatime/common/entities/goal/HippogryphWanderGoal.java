@@ -45,7 +45,7 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
         BlockPos pos = mob.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, mob.blockPosition());
         if (!mob.isVehicle() && mob.isFlying() && mob.position().y() > pos.getY() + 32) {
             stop();
-            mob.landGoal.trigger();
+            mob.setLanding(true);
         }
 
         speedModifier = mob.isFlying() && !mob.isControlledByLocalInstance() ? 10.0D : 1.0D;
@@ -91,8 +91,6 @@ public class HippogryphWanderGoal extends WaterAvoidingRandomStrollGoal {
     public void stop() {
         super.stop();
 
-        if (wantsToLand()) {
-            mob.landGoal.trigger();
-        }
+        mob.setLanding(true);
     }
 }
