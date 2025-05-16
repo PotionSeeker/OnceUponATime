@@ -58,7 +58,7 @@ public class Hippogryph extends AbstractHorse {
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState glideAnimationState = new AnimationState();
     public final AnimationState flyAnimationState = new AnimationState();
-    public final int MAX_FLIGHT_TICKS =  1200;
+    public final int MAX_FLIGHT_TICKS = 1200;
     private int idleAnimationTimeout = 0;
     public HippogryphWanderGoal wanderGoal;
     public HippogryphLandOnGroundGoal landGoal;
@@ -110,15 +110,14 @@ public class Hippogryph extends AbstractHorse {
 
         if (isNoAi()) {
             return;
-        }
-        else if (isControlledByLocalInstance() && getControllingPassenger() != null && getControllingPassenger() instanceof Player rider) {
+        } else if (isControlledByLocalInstance() && getControllingPassenger() != null && getControllingPassenger() instanceof Player rider) {
             double moveX = rider.xxa * 0.5;
             double moveY = vec3d.y;
             double moveZ = rider.zza;
 
             yHeadRot = rider.yHeadRot;
 
-            getLookControl().setLookAt(position().add(0.0D, 2.0D,0.0D));
+            getLookControl().setLookAt(position().add(0.0D, 2.0D, 0.0D));
             yRot = Mth.rotateIfNecessary(yHeadRot, yRot, isFlying() ? 5 : 7);
 
             if (isControlledByLocalInstance()) {
@@ -127,19 +126,16 @@ public class Hippogryph extends AbstractHorse {
                     moveY = Minecraft.getInstance().options.keyJump.isDown() ? 0.5F : ClientEvents.descendKey.isDown() ? -0.5F : 0.0F;
                     moveZ = moveZ > 0.0F ? moveZ : 0.15F;
                     speed *= 0.5F;
-                }
-                else if (rider.jumping) {
+                } else if (rider.jumping) {
                     jumpFromGround();
                     setFlying(true);
-                }
-                else {
+                } else {
                     speed *= 1.15F;
                 }
 
                 vec3d = new Vec3(moveX, moveY, moveZ);
                 setSpeed(speed);
-            }
-            else {
+            } else {
                 calculateEntityAnimation(true);
                 setDeltaMovement(Vec3.ZERO);
                 if (!level().isClientSide && isFlying())
@@ -156,8 +152,7 @@ public class Hippogryph extends AbstractHorse {
             }
             this.setDeltaMovement(getDeltaMovement().scale(0.9F).add(0.0F, down, 0.0F));
             this.calculateEntityAnimation(true);
-        }
-        else {
+        } else {
             super.travel(vec3d);
         }
     }
@@ -343,7 +338,11 @@ public class Hippogryph extends AbstractHorse {
             setFlightTicks(getFlightTicks() + 1);
         }
 
-        // todo- FIX. something here breaks flight...oops
+        if (isFlying() && onGround() || isUnderWater()) {
+            setFlying(false);
+        }
+
+        // todo- FIX. something here breaks flight...oops - maybe fixed now?
         if (isFlying() && getFlightTicks() >= MAX_FLIGHT_TICKS) {
 
             if (wanderGoal != null) {
@@ -354,9 +353,13 @@ public class Hippogryph extends AbstractHorse {
                 setFlying(false);
             }
 
-            BlockPos pos = RandomPos.generateRandomPosTowardDirection(this, 16, random, level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()));
+            Vec3 randomPos = LandRandomPos.getPosTowards(this, 16, 10, level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPosition()).getCenter());
+            Vec3 pos = level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPosition()).getCenter();
 
-            Path path = getNavigation().createPath(pos, 1);
+            if (randomPos == null) {
+                randomPos = pos;
+            }
+            Path path = getNavigation().createPath(randomPos.x() + 0.5D, randomPos.y(), randomPos.z() + 0.5D, 1);
 
             if (path != null && getNavigation().moveTo(path, getSpeed())) {
 
@@ -470,7 +473,7 @@ public class Hippogryph extends AbstractHorse {
         if (!this.level().isClientSide) {
             this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_UUID);
             if (this.isArmor(pStack)) {
-                int i = ((HippogryphArmorItem)pStack.getItem()).getProtection();
+                int i = ((HippogryphArmorItem) pStack.getItem()).getProtection();
                 if (i != 0) {
                     this.getAttribute(Attributes.ARMOR).addTransientModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Hippogryph armor bonus", i, AttributeModifier.Operation.ADDITION));
                 }
@@ -499,6 +502,15 @@ public class Hippogryph extends AbstractHorse {
     }
 
     protected void checkFallDamage(double pY, boolean pOnGround, BlockState pState, BlockPos pPos) {
+        super.checkFallDamage(pY, pOnGround, pState, pPos);
+
+        if (!isFlying() && !isLanding() && fallDistance > 0.85F) {
+            setFlying(true);
+            setDeltaMovement(getDeltaMovement().multiply(1.0D, 0.5D, 1.0D));
+        }
+
+        System.out.println(fallDistance);
+        resetFallDistance();
     }
 
     @Override
