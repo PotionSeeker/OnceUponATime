@@ -8,9 +8,9 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.world.entity.AnimationState;
 
 public class HydraModel<T extends Hydra> extends HierarchicalModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(OnceUponATime.MOD_ID, "hydra"), "main");
@@ -120,7 +120,7 @@ public class HydraModel<T extends Hydra> extends HierarchicalModel<T> {
 
 		PartDefinition neck_end2 = neck_middle2.addOrReplaceChild("neck_end2", CubeListBuilder.create().texOffs(0, 9).addBox(-2.4F, -8.0F, -2.5F, 5.0F, 8.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.1F, -14.0F, 2.5F));
 
-		PartDefinition head2 = neck_end2.addOrReplaceChild("head2", CubeListBuilder.create(), PartPose.offset(0.1F, -8.0F, 0.5F));
+		PartDefinition head2 = neck_end2.addOrReplaceChild("head2", CubeListBuilder.create(), PartPose.offset(0.1F, -8.0F, 0.0F));
 
 		PartDefinition top_head2 = head2.addOrReplaceChild("top_head2", CubeListBuilder.create().texOffs(54, 0).addBox(-4.0F, -3.0F, -11.0F, 8.0F, 3.0F, 12.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 0).addBox(4.0F, -5.0F, -5.0F, 0.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
@@ -177,36 +177,103 @@ public class HydraModel<T extends Hydra> extends HierarchicalModel<T> {
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 
-		this.neck_middle2.visible = !entity.isLeftHeadKilled();
-		this.neck_middle3.visible = !entity.isMiddleHeadKilled();
-		this.neck_middle.visible = !entity.isRightHeadKilled();
+		// Head visibility
+		this.neck_base.visible = !entity.isMiddleHeadKilled() && !entity.isMiddleKilledByFire();
+		this.neck_middle.visible = !entity.isMiddleHeadKilled() && !entity.isMiddleKilledByFire();
+		this.neck_end.visible = !entity.isMiddleHeadKilled() && !entity.isMiddleKilledByFire();
+		this.head.visible = !entity.isMiddleHeadKilled() && !entity.isMiddleKilledByFire();
 
-		this.animateWalk(HydraAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
-		this.animate(entity.idleAnimationState, HydraIdleAnimation.IDLE, ageInTicks);
+		this.neck_base2.visible = !entity.isRightHeadKilled() && !entity.isRightKilledByFire();
+		this.neck_middle2.visible = !entity.isRightHeadKilled() && !entity.isRightKilledByFire();
+		this.neck_end2.visible = !entity.isRightHeadKilled() && !entity.isRightKilledByFire();
+		this.head2.visible = !entity.isRightHeadKilled() && !entity.isRightKilledByFire();
 
-		float neckX = headPitch * 0.004F;
-		float neckY = netHeadYaw * 0.004F;
+		this.neck_base3.visible = !entity.isLeftHeadKilled() && !entity.isLeftKilledByFire();
+		this.neck_middle3.visible = !entity.isLeftHeadKilled() && !entity.isLeftKilledByFire();
+		this.neck_end3.visible = !entity.isLeftHeadKilled() && !entity.isLeftKilledByFire();
+		this.head3.visible = !entity.isLeftHeadKilled() && !entity.isLeftKilledByFire();
 
-		this.neck_base.xRot = neckX;
-		this.neck_base.yRot = neckY;
-		this.neck_end.xRot = neckX;
-		this.neck_end.yRot = neckY;
-		this.head.xRot = neckX;
-		this.head.yRot = neckY;
+		// Neck/head rotations
+		float neckX = headPitch * 0.017453292F; // Convert degrees to radians
+		float neckY = netHeadYaw * 0.017453292F;
 
-		this.neck_base2.xRot = neckX;
-		this.neck_base2.yRot = neckY;
-		this.neck_end2.xRot = neckX;
-		this.neck_end2.yRot = neckY;
-		this.head2.xRot = neckX;
-		this.head2.yRot = neckY;
+		// Middle head (head)
+		if (this.neck_base.visible) {
+			this.neck_base.xRot = neckX;
+			this.neck_base.yRot = neckY;
+			this.neck_end.xRot = neckX * 0.5F;
+			this.neck_end.yRot = neckY * 0.5F;
+			this.head.xRot = neckX * 0.25F;
+			this.head.yRot = neckY * 0.25F;
+		}
 
-		this.neck_base3.xRot = neckX;
-		this.neck_base3.yRot = neckY;
-		this.neck_end3.xRot = neckX;
-		this.neck_end3.yRot = neckY;
-		this.head3.xRot = neckX;
-		this.head3.yRot = neckY;
+		// Right head (head2)
+		if (this.neck_base2.visible) {
+			this.neck_base2.xRot = neckX;
+			this.neck_base2.yRot = neckY + 0.5236F; // Offset to match initial pose
+			this.neck_end2.xRot = neckX * 0.5F;
+			this.neck_end2.yRot = neckY * 0.5F;
+			this.head2.xRot = neckX * 0.25F;
+			this.head2.yRot = neckY * 0.25F;
+		}
+
+		// Left head (head3)
+		if (this.neck_base3.visible) {
+			this.neck_base3.xRot = neckX;
+			this.neck_base3.yRot = neckY - 0.5236F; // Offset to match initial pose
+			this.neck_end3.xRot = neckX * 0.5F;
+			this.neck_end3.yRot = neckY * 0.5F;
+			this.head3.xRot = neckX * 0.25F;
+			this.head3.yRot = neckY * 0.25F;
+		}
+
+		// Apply animations
+		if (entity.getAttackAnimationTimer() > 0) {
+			int animType = entity.getAttackAnimationType();
+			int selectedHead = entity.getSelectedHead();
+			AnimationState animState = selectedHead == 1 ? entity.leftHeadAnimationState :
+					selectedHead == 2 ? entity.middleHeadAnimationState :
+							selectedHead == 3 ? entity.rightHeadAnimationState : entity.idleAnimationState;
+
+			switch (animType) {
+				case 1: // Bite
+					if (selectedHead == 1) {
+						this.animate(animState, HydraAnimation.BITE_LEFT, ageInTicks);
+					} else if (selectedHead == 2) {
+						this.animate(animState, HydraAnimation.BITE, ageInTicks);
+					} else if (selectedHead == 3) {
+						this.animate(animState, HydraAnimation.BITE_RIGHT, ageInTicks);
+					}
+					break;
+				case 2: // Spit
+					if (selectedHead == 1) {
+						this.animate(animState, HydraAnimation.SPIT_LEFT, ageInTicks);
+					} else if (selectedHead == 2) {
+						this.animate(animState, HydraAnimation.SPIT, ageInTicks);
+					} else if (selectedHead == 3) {
+						this.animate(animState, HydraAnimation.SPIT_RIGHT, ageInTicks);
+					}
+					break;
+				case 3: // Spray
+					if (selectedHead == 1) {
+						this.animate(animState, HydraAnimation.SPRAY_LEFT, ageInTicks);
+					} else if (selectedHead == 2) {
+						this.animate(animState, HydraAnimation.SPRAY, ageInTicks);
+					} else if (selectedHead == 3) {
+						this.animate(animState, HydraAnimation.SPRAY_RIGHT, ageInTicks);
+					}
+					break;
+				default:
+					this.animate(entity.idleAnimationState, HydraIdleAnimation.IDLE, ageInTicks);
+					break;
+			}
+		} else {
+			if (limbSwingAmount > 0.01F && entity.getAttackAnimationTimer() == 0) {
+				this.animateWalk(HydraAnimation.WALK, limbSwing, limbSwingAmount, 3.0F, 100.0F);
+			} else {
+				this.animate(entity.idleAnimationState, HydraIdleAnimation.IDLE, ageInTicks);
+			}
+		}
 	}
 
 	@Override

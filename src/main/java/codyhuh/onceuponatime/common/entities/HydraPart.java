@@ -7,7 +7,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,6 +64,15 @@ public class HydraPart extends PartEntity<Hydra> {
     @Override
     public boolean hurt(@NotNull DamageSource source, float damage) {
         return parentMob.damagePart(this, source, damage);
+    }
+
+    // New method to handle right-click interactions
+    @Override
+    public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+        if (!level().isClientSide()) {
+            System.out.println("HydraPart interactAt: " + this.name);
+        }
+        return parentMob.interactPart(this, player, hand);
     }
 
     @Override
