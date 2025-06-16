@@ -1,3 +1,5 @@
+// Version C2
+
 package codyhuh.onceuponatime.client.models;
 
 import codyhuh.onceuponatime.OnceUponATime;
@@ -281,3 +283,4 @@ public class HydraModel<T extends Hydra> extends HierarchicalModel<T> {
 		return root;
 	}
 }
+////

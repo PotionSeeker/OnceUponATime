@@ -1,7 +1,6 @@
-// Hydra.java V2
-
 package codyhuh.onceuponatime.common.entities;
 
+import codyhuh.onceuponatime.common.entities.movecontrol.HydraMoveControl;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -12,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -58,13 +58,13 @@ public class Hydra extends Monster {
     public float leftHealth = 30;
     public float middleHealth = 30;
     public float rightHealth = 30;
-
     private int leftRegenTimer = 0;
     private int middleRegenTimer = 0;
     private int rightRegenTimer = 0;
-
     private static final int HEAD_REGEN_COOLDOWN = 20 * 10; // 10 seconds
     private static final int SMOKE_TICK_INTERVAL = 10; // Emit smoke every 10 ticks (0.5 seconds)
+    public float prevTilt;
+    public float tilt;
 
     public Hydra(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -74,14 +74,15 @@ public class Hydra extends Monster {
         this.headRight = new HydraPart(this, "headRight", 0.4F, 1.5F);
         this.subEntities = new HydraPart[]{this.body, this.headLeft, this.headMiddle, this.headRight};
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1);
+        this.moveControl = new HydraMoveControl(this, 15); // Max turn angle of 15 degrees
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new HydraRangedAttackGoal(this, 1.0D, 40, 4.0F, 12.0F));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, true));
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.7D));
+        this.goalSelector.addGoal(1, new HydraRangedAttackGoal(this, 0.6D, 40, 4.0F, 12.0F)); // Further reduced speed for stability
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 0.6D, true));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.5D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
@@ -112,16 +113,7 @@ public class Hydra extends Monster {
         if (isLeftHeadKilled() && isMiddleHeadKilled() && isRightHeadKilled()) {
             return false; // Can't attack with no heads
         }
-        if (getAttackAnimationTimer() == 0) { // Start bite animation
-            if (!level().isClientSide()) {
-                setAttackAnimation(1, 15); // Bite, 0.75s = 15 ticks
-                selectRandomHead();
-            }
-            return false; // Delay damage until animation nears end
-        } else if (getAttackAnimationType() == 1 && getAttackAnimationTimer() == 5) { // Deal damage at 5 ticks remaining
-            return super.doHurtTarget(target);
-        }
-        return false; // Prevent default damage during other animations
+        return false; // Damage handled in HydraRangedAttackGoal
     }
 
     @Override
@@ -425,11 +417,47 @@ public class Hydra extends Monster {
     public void aiStep() {
         super.aiStep();
         updateParts();
-        // Ensure body rotation aligns with target
+        prevTilt = tilt;
         LivingEntity target = this.getTarget();
         if (target != null) {
-            this.getLookControl().setLookAt(target, 30.0F, 30.0F);
-            this.yBodyRot = this.getYRot();
+            // Calculate target yaw
+            double dx = target.getX() - this.getX();
+            double dz = target.getZ() - this.getZ();
+            float targetYaw = (float) (Mth.atan2(dz, dx) * (180F / Math.PI)) - 90F;
+            // Normalize yaw difference
+            float deltaYaw = Mth.wrapDegrees(targetYaw - this.yBodyRot);
+            // Dynamic lerp factor based on yaw difference
+            float lerpFactor = Math.abs(deltaYaw) > 45F ? 0.05F : 0.1F;
+            // Interpolate body rotation with tighter clamp
+            this.yBodyRot = Mth.lerp(lerpFactor, this.yBodyRot, this.yBodyRot + Mth.clamp(deltaYaw, -15F, 15F));
+            this.yRot = Mth.lerp(lerpFactor, this.yRot, this.yBodyRot);
+            // Update tilt for oscillation damping
+            if (Math.abs(deltaYaw) > 1) {
+                if (Math.abs(tilt) < 15) {
+                    tilt -= Math.signum(deltaYaw) * 0.5F;
+                }
+            } else {
+                if (Math.abs(tilt) > 0) {
+                    float tiltSign = Math.signum(tilt);
+                    tilt -= tiltSign * 0.85F;
+                    if (tilt * tiltSign < 0) {
+                        tilt = 0;
+                    }
+                }
+            }
+            // Update look control only if not in animation
+            if (getAttackAnimationTimer() == 0) {
+                this.getLookControl().setLookAt(target, 15.0F, 15.0F);
+            }
+        } else {
+            // Gradually reduce tilt when no target
+            if (Math.abs(tilt) > 0) {
+                float tiltSign = Math.signum(tilt);
+                tilt -= tiltSign * 0.85F;
+                if (tilt * tiltSign < 0) {
+                    tilt = 0;
+                }
+            }
         }
     }
 
@@ -621,6 +649,8 @@ public class Hydra extends Monster {
         private final float minAttackRange;
         private final float maxAttackRange;
         private int attackTime = -1;
+        private Vec3 lastTargetPos = null;
+        private int pathUpdateTimer = 0;
 
         public HydraRangedAttackGoal(Hydra hydra, double speedModifier, int attackInterval, float minAttackRange, float maxAttackRange) {
             this.hydra = hydra;
@@ -638,6 +668,8 @@ public class Hydra extends Monster {
         @Override
         public void start() {
             this.attackTime = -1;
+            this.lastTargetPos = null;
+            this.pathUpdateTimer = 0;
         }
 
         @Override
@@ -645,6 +677,8 @@ public class Hydra extends Monster {
             this.attackTime = -1;
             hydra.setAttackAnimation(0, 0);
             hydra.setSelectedHead(0);
+            hydra.getNavigation().stop();
+            this.lastTargetPos = null;
         }
 
         @Override
@@ -656,38 +690,59 @@ public class Hydra extends Monster {
             float attackRange = minAttackRange * minAttackRange;
             float maxRange = maxAttackRange * maxAttackRange;
 
-            // Always try to move closer unless performing an attack
+            // Stop movement during attack animations
             if (hydra.getAttackAnimationTimer() > 0) {
                 hydra.getNavigation().stop();
-                hydra.getLookControl().setLookAt(target, 30.0F, 30.0F);
+                // Apply damage for bite at timer == 3
+                if (hydra.getAttackAnimationType() == 1 && hydra.getAttackAnimationTimer() == 3) {
+                    if (distance <= attackRange) {
+                        target.hurt(hydra.damageSources().mobAttack(hydra), (float) hydra.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                        if (!hydra.level().isClientSide()) {
+                            System.out.println("Bite damage applied");
+                        }
+                    }
+                }
                 return;
             }
 
-            if (distance <= attackRange) { // Close range: Bite
-                hydra.getNavigation().stop();
-                hydra.getLookControl().setLookAt(target, 30.0F, 30.0F);
-                if (--this.attackTime <= 0 && hydra.getAttackAnimationTimer() == 0) {
-                    this.attackTime = this.attackInterval;
+            // Update path less frequently for stability
+            if (--pathUpdateTimer <= 0) {
+                // Predict target position based on velocity
+                Vec3 targetPos = new Vec3(
+                        target.getX() + target.getDeltaMovement().x * 10,
+                        target.getY(),
+                        target.getZ() + target.getDeltaMovement().z * 10
+                );
+                if (lastTargetPos == null || lastTargetPos.distanceToSqr(targetPos) > 16.0D) { // Update path if target moved > 4 blocks
+                    hydra.getNavigation().moveTo(targetPos.x, targetPos.y, targetPos.z, distance <= attackRange ? 0.4D : speedModifier);
+                    lastTargetPos = targetPos;
+                    pathUpdateTimer = 20; // Update path every 1 second
+                }
+            }
+
+            // Only apply look control when not attacking
+            if (hydra.getAttackAnimationTimer() == 0) {
+                hydra.getLookControl().setLookAt(target, 15.0F, 15.0F);
+            }
+
+            if (--this.attackTime <= 0 && hydra.getAttackAnimationTimer() == 0) {
+                this.attackTime = this.attackInterval;
+                if (distance <= attackRange) { // Close range: Bite
+                    hydra.getNavigation().stop();
                     if (!hydra.level().isClientSide()) {
                         System.out.println("Bite attack initiated");
                         hydra.setAttackAnimation(1, 15); // Bite, 0.75s = 15 ticks
                         hydra.selectRandomHead();
                     }
-                }
-            } else if (distance <= maxRange) { // Mid to long range: Spray or Spit
-                hydra.getNavigation().stop();
-                hydra.getLookControl().setLookAt(target, 30.0F, 30.0F);
-                if (--this.attackTime <= 0 && hydra.getAttackAnimationTimer() == 0) {
-                    this.attackTime = this.attackInterval;
-                    if (distance <= 8.0 * 8.0) {
-                        // Spray attack (4–8 blocks)
+                } else if (distance <= maxRange) {
+                    hydra.getNavigation().stop();
+                    if (distance <= 8.0 * 8.0) { // Mid range: Spray (4–8 blocks)
                         if (!hydra.level().isClientSide()) {
                             System.out.println("Spray attack initiated");
                             hydra.setAttackAnimation(3, 40); // Spray, 2.0s = 40 ticks
                             hydra.selectRandomHead();
                         }
-                    } else {
-                        // Spit attack (9–12 blocks)
+                    } else { // Long range: Spit (9–12 blocks)
                         if (!hydra.level().isClientSide()) {
                             System.out.println("Spit attack initiated");
                             hydra.setAttackAnimation(2, 20); // Spit, 1.0s = 20 ticks
@@ -696,9 +751,6 @@ public class Hydra extends Monster {
                     }
                 }
             }
-            // Always move towards target if not attacking
-            hydra.getNavigation().moveTo(target, this.speedModifier);
         }
     }
 }
-//
